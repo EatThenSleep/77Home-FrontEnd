@@ -1,8 +1,18 @@
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Dropdown,
+} from "react-bootstrap";
 import { getAllWard } from "../../service/apiService";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
+
+import { Range } from "react-range";
 import "../../styles/ListHouse.scss";
 const ListHouse = () => {
   const [wardList, setWardList] = useState([]);
@@ -10,10 +20,12 @@ const ListHouse = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredHouses, setFilteredHouses] = useState([]);
   const [selectedWard, setSelectedWard] = useState("");
-  const [selectedPriceRange, setSelectedPriceRange] = useState("");
-  const [selectedAreaSize, setSelectedAreaSize] = useState("");
+  const [priceRange, setPriceRange] = useState([0, 100]);
+  const [areaSizeRange, setAreaSizeRange] = useState([0, 500]);
+
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
@@ -67,38 +79,17 @@ const ListHouse = () => {
           .includes(selectedWard.toLowerCase());
 
       // Price filter logic
+      console.log("price range :", priceRange);
+      const housePrice = parseInt(house.price.replace(/\D/g, "")); // remove non-numeric characters (e.g. currency symbols)
       const priceMatch =
-        selectedPriceRange === "" ||
-        (selectedPriceRange === "1-3" &&
-          parseInt(house.price.replace(/\D/g, "")) >= 1000000 &&
-          parseInt(house.price.replace(/\D/g, "")) <= 3000000) ||
-        (selectedPriceRange === "3-5" &&
-          parseInt(house.price.replace(/\D/g, "")) >= 3000000 &&
-          parseInt(house.price.replace(/\D/g, "")) <= 5000000) ||
-        (selectedPriceRange === "5-7" &&
-          parseInt(house.price.replace(/\D/g, "")) >= 5000000 &&
-          parseInt(house.price.replace(/\D/g, "")) <= 7000000) ||
-        (selectedPriceRange === "7-10" &&
-          parseInt(house.price.replace(/\D/g, "")) >= 7000000 &&
-          parseInt(house.price.replace(/\D/g, "")) <= 10000000);
-
+        housePrice >= priceRange[0] * 1000000 &&
+        housePrice <= priceRange[1] * 1000000;
       // Area size filter logic
-      console.log("selected area size: " + selectedAreaSize);
-      const areaSizeMatch =
-        selectedAreaSize === "" ||
-        (selectedAreaSize === "20-40" &&
-          parseInt(house.area.replace(/\D/g, "")) >= 20 &&
-          parseInt(house.area.replace(/\D/g, "")) <= 40) ||
-        (selectedAreaSize === "40-60" &&
-          parseInt(house.area.replace(/\D/g, "")) >= 40 &&
-          parseInt(house.area.replace(/\D/g, "")) <= 60) ||
-        (selectedAreaSize === "60-80" &&
-          parseInt(house.area.replace(/\D/g, "")) >= 60 &&
-          parseInt(house.area.replace(/\D/g, "")) <= 80) ||
-        (selectedAreaSize === "80-100" &&
-          parseInt(house.area.replace(/\D/g, "")) >= 80 &&
-          parseInt(house.area.replace(/\D/g, "")) <= 100);
 
+      console.log("area size range :", areaSizeRange);
+      const areaSize = parseInt(house.area.replace(/\D/g, ""), 10); // Loại bỏ ký tự không phải số và chuyển thành số nguyên
+      const areaSizeMatch =
+        areaSize >= areaSizeRange[0] && areaSize <= areaSizeRange[1];
       const statusMatch =
         selectedStatus === "" || statusMapping[house.status] === selectedStatus;
 
@@ -125,37 +116,155 @@ const ListHouse = () => {
         <Col md={2}>
           <Form.Control
             type="text"
+            className="custom-form-control"
             placeholder="Nhà trọ"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Col>
+
         <Col md={2}>
-          <Form.Select
-            value={selectedAreaSize}
-            onChange={(e) => setSelectedAreaSize(e.target.value)}
-          >
-            <option value="">Chọn diện tích</option>
-            <option value="20-40">20m² - 40m2</option>
-            <option value="40-60">40m² - 60m²</option>
-            <option value="60-80">60m² - 80m²</option>
-            <option value="80-100">80m² - 100m²</option>
-            {/* Thêm các tùy chọn khác nếu cần */}
-          </Form.Select>
+          <Dropdown className="border rounded">
+            <Dropdown.Toggle variant="none" className="custom-dropdown-toggle">
+              Chọn diện tích
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="custom-dropdown-menu">
+              <h5 className="fw-bold">Diện tích</h5>
+              <Row>
+                <Col md={6}>
+                  <span className="fw-bold px-1">
+                    Từ: {areaSizeRange[0]} m<sup>2</sup>
+                  </span>
+                  <Form.Control
+                    className="mt-2"
+                    type="number"
+                    value={areaSizeRange[0]}
+                    readOnly
+                  />
+                </Col>
+                <Col md={6}>
+                  <span className="fw-bold px-1">
+                    Đến: {areaSizeRange[1]} m<sup>2</sup>
+                  </span>
+                  <Form.Control
+                    className="mt-2"
+                    type="number"
+                    value={areaSizeRange[1]}
+                    readOnly
+                  />
+                </Col>
+              </Row>
+              <div className="slider-container mt-4">
+                <Range
+                  step={1}
+                  min={0}
+                  max={500}
+                  values={areaSizeRange}
+                  onChange={(values) => setAreaSizeRange(values)}
+                  renderTrack={({ props, children }) => (
+                    <div
+                      {...props}
+                      style={{
+                        ...props.style,
+                        height: "6px",
+                        width: "100%",
+                        backgroundColor: "#ccc",
+                      }}
+                    >
+                      {children}
+                    </div>
+                  )}
+                  renderThumb={({ props }) => (
+                    <div
+                      {...props}
+                      style={{
+                        ...props.style,
+                        height: "20px",
+                        width: "20px",
+                        backgroundColor: "#007bff",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
+
         <Col md={2}>
-          <Form.Select
-            value={selectedPriceRange}
-            onChange={(e) => setSelectedPriceRange(e.target.value)}
-          >
-            <option value="">Chọn giá thuê</option>
-            <option value="1-3">1 triệu - 3 triệu</option>
-            <option value="3-5">3 triệu - 5 triệu</option>
-            <option value="5-7">5 triệu - 7 triệu</option>
-            <option value="7-10">7 triệu - 10 triệu</option>
-            {/* Thêm các tùy chọn khác nếu cần */}
-          </Form.Select>
+          <Dropdown className="border rounded ">
+            <Dropdown.Toggle variant="none" className="custom-dropdown-toggle">
+              Chọn mức giá
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu className="custom-dropdown-menu">
+              <h5 className="fw-bold ">Mức giá</h5>
+              <Row>
+                <Col md={6}>
+                  <span className="fw-bold px-1">
+                    Từ: {priceRange[0]} triệu
+                  </span>
+                  <Form.Control
+                    className="mt-2"
+                    type="number"
+                    value={priceRange[0]}
+                    readOnly
+                  />
+                </Col>
+                <Col md={6}>
+                  <span className="fw-bold px-1">
+                    Đến: {priceRange[1]} triệu
+                  </span>
+                  <Form.Control
+                    className="mt-2"
+                    type="number"
+                    value={priceRange[1]}
+                    readOnly
+                  />
+                </Col>
+              </Row>
+              <div className="slider-container mt-4">
+                <Range
+                  step={1}
+                  min={0}
+                  max={100}
+                  values={priceRange}
+                  onChange={(values) => setPriceRange(values)}
+                  renderTrack={({ props, children }) => (
+                    <div
+                      {...props}
+                      style={{
+                        ...props.style,
+                        height: "6px",
+                        width: "100%",
+                        backgroundColor: "#ccc",
+                      }}
+                    >
+                      {children}
+                    </div>
+                  )}
+                  renderThumb={({ props }) => (
+                    <div
+                      {...props}
+                      style={{
+                        ...props.style,
+                        height: "20px",
+                        width: "20px",
+                        backgroundColor: "#007bff",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </Dropdown.Menu>
+          </Dropdown>
         </Col>
+
         <Col md={2}>
           <Form.Select
             value={selectedStatus}
@@ -216,7 +325,7 @@ const ListHouse = () => {
                         </span>
                         <br />
                         <span>
-                          <b>Diện tích:</b> {house.area}
+                          <b>Diện tích:</b> {house.area} m<sup>2</sup>
                         </span>
                         <br />
                         <span>
