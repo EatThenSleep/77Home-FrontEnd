@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "../../styles/CreateNewHouse.scss";
 import { getAllWard } from "../../service/apiService";
-import LightBox from "react-awesome-lightbox";
-import "react-awesome-lightbox/build/style.css";
+
 const schema = yup.object({
   houseName: yup.string().required("Tên nhà trọ không được để trống!"),
   houseDescription: yup.string().required("Mô tả không được để trống!"),
@@ -16,20 +15,23 @@ const schema = yup.object({
     .required("Số nhà, Tên đường không được để trống!"),
   rentPrice: yup
     .number()
+    .transform((value) => (isNaN(value) ? 0 : value))
     .required("Giá thuê không được để trống!")
     .positive("Giá thuê phải là số dương!"),
-
   area: yup
     .number()
+    .transform((value) => (isNaN(value) ? 0 : value))
     .required("Diện tích không được để trống!")
     .positive("Diện tích phải là số dương!"),
   bedrooms: yup
     .number()
+    .transform((value) => (isNaN(value) ? 0 : value))
     .required("Số phòng ngủ không được để trống!")
     .integer("Số phòng ngủ phải là số nguyên!")
     .positive("Số phòng ngủ phải là số dương!"),
   bathrooms: yup
     .number()
+    .transform((value) => (isNaN(value) ? 0 : value))
     .required("Số phòng tắm không được để trống!")
     .integer("Số phòng tắm phải là số nguyên!")
     .positive("Số phòng tắm phải là số dương!"),
@@ -43,27 +45,25 @@ const schema = yup.object({
     .email("Email không đúng định dạng!"),
   propertyImage: yup
     .mixed()
-    .test("required", "Vui lòng chọn hình ảnh nhà trọ!", (value) => {
-      return value && value.length > 0; // Kiểm tra length của FileList
-    })
-    .test("type", "Vui lòng chọn ảnh có định dạng hợp lệ!", (value) => {
+    .required("Vui lòng chọn hình ảnh nhà trọ!")
+    .test("fileType", "Vui lòng chọn ảnh PNG hoặc JPG!", (value) => {
       return (
-        value &&
-        value.length > 0 &&
-        (value[0].type === "image/png" || value[0].type === "image/jpeg")
+        value && value[0] && ["image/png", "image/jpeg"].includes(value[0].type)
       );
+    })
+    .test("fileSize", "Dung lượng ảnh phải nhỏ hơn 5MB!", (value) => {
+      return value && value[0] && value[0].size <= 5 * 1024 * 1024;
     }),
   ownershipDocument: yup
     .mixed()
-    .test("required", "Vui lòng chọn giấy tờ chính chủ!", (value) => {
-      return value && value.length > 0; // Kiểm tra length của FileList
-    })
-    .test("type", "Vui lòng chọn ảnh có định dạng hợp lệ!", (value) => {
+    .required("Vui lòng chọn giấy tờ chính chủ!")
+    .test("fileType", "Vui lòng chọn ảnh PNG hoặc JPG!", (value) => {
       return (
-        value &&
-        value.length > 0 &&
-        (value[0].type === "image/png" || value[0].type === "image/jpeg")
+        value && value[0] && ["image/png", "image/jpeg"].includes(value[0].type)
       );
+    })
+    .test("fileSize", "Dung lượng ảnh phải nhỏ hơn 5MB!", (value) => {
+      return value && value[0] && value[0].size <= 5 * 1024 * 1024;
     }),
 });
 
@@ -72,21 +72,14 @@ const CreateNewHouse = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
-    trigger,
-    watch,
   } = useForm({
     resolver: yupResolver(schema),
   });
 
+  const [wardList, setWardList] = useState([]);
   const [propertyImagePreview, setPropertyImagePreview] = useState(null);
   const [ownershipDocumentPreview, setOwnershipDocumentPreview] =
     useState(null);
-  const [isPropertyImageLightboxOpen, setIsPropertyImageLightboxOpen] =
-    useState(false);
-  const [isOwnershipDocumentLightboxOpen, setIsOwnershipDocumentLightboxOpen] =
-    useState(false);
-  const [wardList, setWardList] = useState([]);
 
   useEffect(() => {
     fetchAllWard();
@@ -99,7 +92,7 @@ const CreateNewHouse = () => {
     }
   };
 
-  const handleImageChange = (event, type) => {
+  const handleImageChange = async (event, type) => {
     const file = event.target.files[0];
 
     if (file) {
@@ -107,18 +100,21 @@ const CreateNewHouse = () => {
       reader.onloadend = () => {
         if (type === "propertyImage") {
           setPropertyImagePreview(reader.result);
-          setValue("propertyImage", event.target.files[0]); // Di chuyển setValue vào đây
         } else if (type === "ownershipDocument") {
           setOwnershipDocumentPreview(reader.result);
-          setValue("ownershipDocument", event.target.files); // Di chuyển setValue vào đây
         }
       };
       reader.readAsDataURL(file);
+    } else {
+      if (type === "propertyImage") {
+        setPropertyImagePreview(null);
+      } else if (type === "ownershipDocument") {
+        setOwnershipDocumentPreview(null);
+      }
     }
   };
 
   const onSubmit = async (data) => {
-    await trigger();
     console.log("data", data);
   };
   return (
@@ -134,7 +130,7 @@ const CreateNewHouse = () => {
                   type="text"
                   placeholder="Nhập tên nhà trọ"
                   {...register("houseName")}
-                  isInvalid={!!errors.houseName}
+                  isInvalid={errors.houseName}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.houseName?.message}
@@ -152,7 +148,7 @@ const CreateNewHouse = () => {
                   rows={1}
                   placeholder="Mô tả nhà trọ của bạn"
                   {...register("houseDescription")}
-                  isInvalid={!!errors.houseDescription}
+                  isInvalid={errors.houseDescription}
                 />
                 <Form.Control.Feedback type="invalid">
                   {errors.houseDescription?.message}
@@ -168,9 +164,7 @@ const CreateNewHouse = () => {
               <Form.Select
                 className="no-scrollbar"
                 {...register("ward")}
-                isInvalid={!!errors.ward}
-                // value={selectedWard}
-                // onChange={(e) => setSelectedWard(e.target.value)}
+                isInvalid={errors.ward}
               >
                 <option value="">Chọn phường/Xã</option>
                 {wardList.map((ward) => (
@@ -191,7 +185,7 @@ const CreateNewHouse = () => {
                 type="text"
                 placeholder="Nhập số nhà, tên đường"
                 {...register("streetAddress")}
-                isInvalid={!!errors.streetAddress}
+                isInvalid={errors.streetAddress}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.streetAddress?.message}
@@ -208,7 +202,7 @@ const CreateNewHouse = () => {
                 placeholder="Nhập giá thuê"
                 {...register("rentPrice")}
                 defaultValue={0}
-                isInvalid={!!errors.rentPrice}
+                isInvalid={errors.rentPrice}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.rentPrice?.message}
@@ -224,7 +218,7 @@ const CreateNewHouse = () => {
                 placeholder="Nhập diện tích"
                 {...register("area")}
                 defaultValue={0}
-                isInvalid={!!errors.area}
+                isInvalid={errors.area}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.area?.message}
@@ -241,7 +235,7 @@ const CreateNewHouse = () => {
                 placeholder="Nhập số phòng ngủ"
                 {...register("bedrooms")}
                 defaultValue={0}
-                isInvalid={!!errors.bedrooms}
+                isInvalid={errors.bedrooms}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.bedrooms?.message}
@@ -256,7 +250,7 @@ const CreateNewHouse = () => {
                 placeholder="Nhập số phòng tắm"
                 {...register("bathrooms")}
                 defaultValue={0}
-                isInvalid={!!errors.bathrooms}
+                isInvalid={errors.bathrooms}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.bathrooms?.message}
@@ -269,10 +263,10 @@ const CreateNewHouse = () => {
             <Form.Group controlId="phoneNumber">
               <Form.Label>Số điện thoại</Form.Label>
               <Form.Control
-                type="text"
+                type="number"
                 placeholder="Nhập số điện thoại"
                 {...register("phoneNumber")}
-                isInvalid={!!errors.phoneNumber}
+                isInvalid={errors.phoneNumber}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.phoneNumber?.message}
@@ -286,7 +280,7 @@ const CreateNewHouse = () => {
                 type="email"
                 placeholder="Nhập email"
                 {...register("email")}
-                isInvalid={!!errors.email}
+                isInvalid={errors.email}
               />
               <Form.Control.Feedback type="invalid">
                 {errors.email?.message}
@@ -294,7 +288,7 @@ const CreateNewHouse = () => {
             </Form.Group>{" "}
           </Col>
         </Row>{" "}
-        <Row>
+        <Row className="mb-3">
           <Col md={6}>
             <Form.Group controlId="propertyImage">
               <Form.Label>Hình ảnh nhà trọ</Form.Label>
@@ -302,27 +296,22 @@ const CreateNewHouse = () => {
                 type="file"
                 accept="image/png, image/jpeg"
                 {...register("propertyImage")}
-                isInvalid={!!errors.propertyImage}
                 onChange={(e) => handleImageChange(e, "propertyImage")}
+                isInvalid={errors.propertyImage}
               />
-              <Form.Text className="text-muted">
-                Supported format: PNG, JPG
-              </Form.Text>
-              <Form.Control.Feedback type="invalid">
-                {errors.propertyImage?.message}
-              </Form.Control.Feedback>
               {propertyImagePreview && (
-                <div
-                  onClick={() => setIsPropertyImageLightboxOpen(true)}
-                  style={{ cursor: "pointer" }}
-                >
+                <div className="image-preview mt-2">
                   <img
                     src={propertyImagePreview}
                     alt="Property preview"
-                    style={{ width: "250px", height: "auto" }}
+                    width="300px"
+                    height="auto"
                   />
                 </div>
               )}
+              <Form.Control.Feedback type="invalid">
+                {errors.propertyImage?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
 
@@ -333,48 +322,27 @@ const CreateNewHouse = () => {
                 type="file"
                 accept="image/png, image/jpeg"
                 {...register("ownershipDocument")}
-                isInvalid={!!errors.ownershipDocument}
                 onChange={(e) => handleImageChange(e, "ownershipDocument")}
+                isInvalid={errors.ownershipDocument}
               />
-              <Form.Text className="text-muted">
-                Supported format: PNG, JPG
-              </Form.Text>
-              <Form.Control.Feedback type="invalid">
-                {errors.ownershipDocument?.message}
-              </Form.Control.Feedback>
               {ownershipDocumentPreview && (
-                <div
-                  onClick={() => setIsOwnershipDocumentLightboxOpen(true)}
-                  style={{ cursor: "pointer" }}
-                >
+                <div className="image-preview mt-2">
                   <img
                     src={ownershipDocumentPreview}
-                    alt="Document preview"
-                    style={{ width: "250px", height: "auto" }}
+                    alt="Ownership preview"
+                    width="300px"
+                    height="auto"
                   />
                 </div>
               )}
+              <Form.Control.Feedback type="invalid">
+                {errors.ownershipDocument?.message}
+              </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
-        {/* Lightbox for property image */}
-        {isPropertyImageLightboxOpen && (
-          <LightBox
-            image={propertyImagePreview}
-            title="Hình ảnh nhà trọ"
-            onClose={() => setIsPropertyImageLightboxOpen(false)}
-          />
-        )}
-        {/* Lightbox for ownership document */}
-        {isOwnershipDocumentLightboxOpen && (
-          <LightBox
-            image={ownershipDocumentPreview}
-            title="Giấy tờ chính chủ"
-            onClose={() => setIsOwnershipDocumentLightboxOpen(false)}
-          />
-        )}
         <div className="mt-3 d-flex justify-content-end">
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" onClick={onSubmit}>
             Gửi thông tin
           </Button>
         </div>
