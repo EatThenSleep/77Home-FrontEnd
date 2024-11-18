@@ -9,7 +9,7 @@
       "ward": "Phường Lê Lợi",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "40m²",
+      "area": "40",
       "status": "Còn trống",
       "image": ""
     },
@@ -22,20 +22,20 @@
       "ward": "Phường Trần Phú",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "50m²",
+      "area": "50",
       "status": "Còn trống",
       "image": ""
     },
     {
       "id": 3,
       "name": "Nhà trọ 3",
-      "price": "3.000.0000đ/tháng",
+      "price": "3.000.000đ/tháng",
       "description": "Nhà trọ An Phát có an ninh tốt, gần chợ và khu vực trường học.",
       "street": "78 Đường Lý Thường Kiệt",
       "ward": "Phường Hải Cảng",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "90m²",
+      "area": "90",
       "status": "Đã thuê",
       "image": ""
     },
@@ -48,7 +48,7 @@
       "ward": "Phường Ngô Mây",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "90m²",
+      "area": "90",
       "status": "Còn trống",
       "image": ""
     },
@@ -61,7 +61,7 @@
       "ward": "Phường Quang Trung",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "70m²",
+      "area": "70",
       "status": "Còn trống",
       "image": ""
     },
@@ -74,7 +74,7 @@
       "ward": "Phường Lê Lợi",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "95m²",
+      "area": "95",
       "status": "Đã thuê",
       "image": ""
     },
@@ -87,7 +87,7 @@
       "ward": "Phường Trần Hưng Đạo",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "70m²",
+      "area": "70",
       "status": "Còn trống",
       "image": ""
     },
@@ -100,7 +100,7 @@
       "ward": "Phường Nhơn Bình",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "85m²",
+      "area": "85",
       "status": "Còn trống",
       "image": ""
     },
@@ -113,7 +113,7 @@
       "ward": "Phường Nhơn Phú",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "50m²",
+      "area": "50",
       "status": "Đã thuê",
       "image": ""
     },
@@ -126,7 +126,7 @@
       "ward": "Phường Nhơn Hội",
       "district": "Thành phố Quy Nhơn",
       "province": "Bình Định",
-      "area": "70m²",
+      "area": "70",
       "status": "Còn trống",
       "image": ""
     }
