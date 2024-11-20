@@ -1,12 +1,7 @@
 import "./App.css";
-import ManageHouse from "./components/owner/ManageHouse";
 
 function App() {
-  return (
-    <>
-      <ManageHouse />
-    </>
-  );
+  return <>hello world</>;
 }
 
 export default App;
