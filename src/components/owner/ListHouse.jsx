@@ -14,7 +14,9 @@ import ReactPaginate from "react-paginate";
 
 import { Range } from "react-range";
 import "../../styles/ListHouse.scss";
+import { useNavigate } from "react-router-dom";
 const ListHouse = () => {
+  const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
   const [listHouse, setListHouse] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -107,6 +109,13 @@ const ListHouse = () => {
 
   return (
     <Container className="mt-4">
+      <Button
+        className="btn-create-new"
+        variant="primary"
+        onClick={() => navigate("/house/create")}
+      >
+        Thêm nhà trọ
+      </Button>
       {/* Tiêu đề */}
       <h1 className="text-center mb-4">Danh sách nhà trọ</h1>
 
