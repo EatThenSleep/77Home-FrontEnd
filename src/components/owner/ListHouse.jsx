@@ -118,13 +118,10 @@ const ListHouse = () => {
     setCurrentPage(0);
   };
 
-    const handleTongleModalConfirm = () => {
-    setOpenModalDelete(!isOpenModalDelete);
+  const handleViewDetail = (houseId) => {
+    navigate(`/house/${houseId}`);
   };
-   const handleDeleteHouse = (house) => {
-    handleTongleModalConfirm(isOpenModalDelete);
-   setHouseData(house)
-  };
+
   return (
     <Container className="mt-4">
       {/* Tiêu đề */}
@@ -203,7 +200,12 @@ const ListHouse = () => {
       <Row className="mt-5">
         {currentItems && currentItems.length > 0 ? (
           currentItems.map((house, index) => (
-            <Col md={12} key={house.id} className="mb-3">
+            <Col
+              md={12}
+              key={house.id}
+              className="mb-3"
+              onClick={() => handleViewDetail(house.id)}
+            >
               <Card className="p-3">
                 <Row>
                   <Col md={4}>
