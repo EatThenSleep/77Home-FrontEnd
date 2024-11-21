@@ -16,8 +16,8 @@ const ListHouse = () => {
   const [selectedAreaSize, setSelectedAreaSize] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [isOpenModalDelete, setOpenModalDelete] = useState(false);
-  const [houseData, setHouseData] = useState([]);
+  const [isOpenModalDelete , setOpenModalDelete] = useState(false);
+  const [houseData , setHouseData] = useState([]);
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
@@ -118,18 +118,13 @@ const ListHouse = () => {
     setCurrentPage(0);
   };
 
-  const handleViewDetail = (houseId) => {
-    navigate(`/house/${houseId}`);
-  };
-
-  const handleTongleModalConfirm = () => {
+    const handleTongleModalConfirm = () => {
     setOpenModalDelete(!isOpenModalDelete);
   };
-  const handleDeleteHouse = (house) => {
+   const handleDeleteHouse = (house) => {
     handleTongleModalConfirm(isOpenModalDelete);
-    setHouseData(house);
+   setHouseData(house)
   };
-
   return (
     <Container className="mt-4">
       {/* Tiêu đề */}
@@ -245,11 +240,7 @@ const ListHouse = () => {
                           <b>Trạng thái:</b> {house.status}
                         </span>
                       </Card.Text>
-                      <Button
-                        variant="danger"
-                        className="px-4 mt-2"
-                        onClick={() => handleDeleteHouse(house)}
-                      >
+                      <Button variant="danger" className="px-4 mt-2" onClick={() =>handleDeleteHouse(house)}>
                         Xóa
                       </Button>
                     </Card.Body>
@@ -275,9 +266,9 @@ const ListHouse = () => {
       />
 
       <DeleteHouse
-        show={isOpenModalDelete}
-        handleClose={handleTongleModalConfirm}
-        houseData={houseData}
+      show={isOpenModalDelete}
+      handleClose={handleTongleModalConfirm}
+      houseData={houseData}
       />
     </Container>
   );
