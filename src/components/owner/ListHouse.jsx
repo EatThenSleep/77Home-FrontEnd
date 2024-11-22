@@ -15,6 +15,7 @@ import ReactPaginate from "react-paginate";
 import { Range } from "react-range";
 import "../../styles/ListHouse.scss";
 import { useNavigate } from "react-router-dom";
+import DeleteHouse from "./DeleteHouse";
 const ListHouse = () => {
   const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
@@ -27,7 +28,8 @@ const ListHouse = () => {
 
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-
+  const [isOpenModalDelete , setOpenModalDelete] = useState(false);
+  const [houseData , setHouseData] = useState([]);
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
@@ -55,7 +57,7 @@ const ListHouse = () => {
       setWardList(res.data.data);
     }
   };
-
+  
   const fetchAllListHouse = async () => {
     const res = await axios.get("http://localhost:3000/houses");
     if (res && res.data) {
@@ -107,6 +109,13 @@ const ListHouse = () => {
     setCurrentPage(0);
   };
 
+    const handleTongleModalConfirm = () => {
+    setOpenModalDelete(!isOpenModalDelete);
+  };
+   const handleDeleteHouse = (house) => {
+    handleTongleModalConfirm(isOpenModalDelete);
+   setHouseData(house)
+  };
   return (
     <Container className="mt-4">
       <Button
@@ -341,7 +350,7 @@ const ListHouse = () => {
                           <b>Trạng thái:</b> {house.status}
                         </span>
                       </Card.Text>
-                      <Button variant="danger" className="px-4 mt-2">
+                      <Button variant="danger" className="px-4 mt-2" onClick={() =>handleDeleteHouse(house)}>
                         Xóa
                       </Button>
                     </Card.Body>
@@ -364,6 +373,12 @@ const ListHouse = () => {
         containerClassName="pagination"
         activeClassName="active"
         disabledClassName="disabled"
+      />
+
+      <DeleteHouse
+      show={isOpenModalDelete}
+      handleClose={handleTongleModalConfirm}
+      houseData={houseData}
       />
     </Container>
   );
