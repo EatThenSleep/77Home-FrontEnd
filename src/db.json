@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "Nhà trọ 1",
-      "price": "3.000.000đ/tháng",
+      "price": "3.000.000",
       "description": "Nhà trọ Minh Anh nằm ở vị trí trung tâm, rất thuận tiện cho việc đi lại và học tập.",
       "street": "123 Đường Trần Hưng Đạo",
       "ward": "Phường Lê Lợi",
@@ -11,12 +11,17 @@
       "province": "Bình Định",
       "area": "40",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+      "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
+
     },
     {
       "id": 2,
       "name": "Nhà trọ 2",
-      "price": "2.800.000đ/tháng",
+      "price": "2.800.000",
       "description": "Nhà trọ Thanh Bình nằm gần biển, không gian thoáng mát và yên tĩnh.",
       "street": "45 Đường Nguyễn Huệ",
       "ward": "Phường Trần Phú",
@@ -24,12 +29,16 @@
       "province": "Bình Định",
       "area": "50",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 3,
       "name": "Nhà trọ 3",
-      "price": "3.000.000đ/tháng",
+      "price": "3.000.000",
       "description": "Nhà trọ An Phát có an ninh tốt, gần chợ và khu vực trường học.",
       "street": "78 Đường Lý Thường Kiệt",
       "ward": "Phường Hải Cảng",
@@ -37,12 +46,16 @@
       "province": "Bình Định",
       "area": "90",
       "status": "Đã thuê",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 4,
       "name": "Nhà trọ 4",
-      "price": "5.000.000đ/tháng",
+      "price": "5.000.000",
       "description": "Nhà trọ Hồng Hạnh có sân vườn, thích hợp cho gia đình nhỏ.",
       "street": "32 Đường Phan Bội Châu",
       "ward": "Phường Ngô Mây",
@@ -50,12 +63,16 @@
       "province": "Bình Định",
       "area": "90",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 5,
       "name": "Nhà trọ 5",
-      "price": "5.500.000đ/tháng",
+      "price": "5.500.000",
       "description": "Nhà trọ Minh Khang ở khu vực yên tĩnh, gần các trường đại học.",
       "street": "56 Đường Tây Sơn",
       "ward": "Phường Quang Trung",
@@ -63,12 +80,16 @@
       "province": "Bình Định",
       "area": "70",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 6,
       "name": "Nhà trọ 6",
-      "price": "7.000.000đ/tháng",
+      "price": "7.000.000",
       "description": "Nhà trọ Thanh Tú có nội thất đầy đủ, dọn vào ở ngay.",
       "street": "89 Đường Nguyễn Tất Thành",
       "ward": "Phường Lê Lợi",
@@ -76,12 +97,16 @@
       "province": "Bình Định",
       "area": "95",
       "status": "Đã thuê",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 7,
       "name": "Nhà trọ 7",
-      "price": "4.000.000đ/tháng",
+      "price": "4.000.000",
       "description": "Nhà trọ An Hòa gần siêu thị, thuận tiện cho việc mua sắm và sinh hoạt.",
       "street": "101 Đường Xuân Diệu",
       "ward": "Phường Trần Hưng Đạo",
@@ -89,12 +114,16 @@
       "province": "Bình Định",
       "area": "70",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 8,
       "name": "Nhà trọ 8",
-      "price": "6.500.000đ/tháng",
+      "price": "6.500.000",
       "description": "Nhà trọ Việt Hưng có không gian rộng rãi, thoáng đãng và an toàn.",
       "street": "67 Đường Lê Lợi",
       "ward": "Phường Nhơn Bình",
@@ -102,12 +131,16 @@
       "province": "Bình Định",
       "area": "85",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 9,
       "name": "Nhà trọ 9",
-      "price": "8.000.000đ/tháng",
+      "price": "8.000.000",
       "description": "Nhà trọ Gia Hưng nằm trong khu dân cư đông đúc, tiện ích đa dạng.",
       "street": "25 Đường Bạch Đằng",
       "ward": "Phường Nhơn Phú",
@@ -115,12 +148,16 @@
       "province": "Bình Định",
       "area": "50",
       "status": "Đã thuê",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     },
     {
       "id": 10,
       "name": "Nhà trọ 10",
-      "price": "2.500.000đ/tháng",
+      "price": "2.500.000",
       "description": "Nhà trọ Hoàng Long có giá hợp lý, thích hợp cho sinh viên.",
       "street": "12 Đường Lê Duẩn",
       "ward": "Phường Nhơn Hội",
@@ -128,7 +165,11 @@
       "province": "Bình Định",
       "area": "70",
       "status": "Còn trống",
-      "image": ""
+      "image": "",
+       "bedrooms" : 3,
+      "bathrooms" : 4,
+      "phoneNumber" : "0123131313",
+      "email" : "ower@gmail.com"
     }
   ]
 }

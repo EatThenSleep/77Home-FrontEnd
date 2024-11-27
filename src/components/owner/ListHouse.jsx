@@ -15,6 +15,7 @@ import ReactPaginate from "react-paginate";
 import { Range } from "react-range";
 import "../../styles/ListHouse.scss";
 import { useNavigate } from "react-router-dom";
+import DeleteHouse from "./DeleteHouse";
 const ListHouse = () => {
   const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
@@ -27,7 +28,8 @@ const ListHouse = () => {
 
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-
+  const [isOpenModalDelete, setOpenModalDelete] = useState(false);
+  const [houseData, setHouseData] = useState([]);
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
@@ -105,6 +107,18 @@ const ListHouse = () => {
     const filteredHouses = filterHouses();
     setFilteredHouses(filteredHouses);
     setCurrentPage(0);
+  };
+
+  const handleViewDetail = (houseId) => {
+    navigate(`/house/${houseId}`);
+  };
+
+  const handleTongleModalConfirm = () => {
+    setOpenModalDelete(!isOpenModalDelete);
+  };
+  const handleDeleteHouse = (house) => {
+    handleTongleModalConfirm(isOpenModalDelete);
+    setHouseData(house);
   };
 
   return (
@@ -276,6 +290,7 @@ const ListHouse = () => {
 
         <Col md={2}>
           <Form.Select
+            className="custom-form-select"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -287,7 +302,7 @@ const ListHouse = () => {
         </Col>
         <Col md={2}>
           <Form.Select
-            className="no-scrollbar"
+            className="no-scrollbar custom-form-select"
             value={selectedWard}
             onChange={(e) => setSelectedWard(e.target.value)}
           >
@@ -310,7 +325,12 @@ const ListHouse = () => {
       <Row className="mt-5">
         {currentItems && currentItems.length > 0 ? (
           currentItems.map((house, index) => (
-            <Col md={12} key={house.id} className="mb-3">
+            <Col
+              md={12}
+              key={house.id}
+              className="mb-3"
+              onClick={() => handleViewDetail(house.id)}
+            >
               <Card className="p-3">
                 <Row>
                   <Col md={4}>
@@ -341,7 +361,11 @@ const ListHouse = () => {
                           <b>Trạng thái:</b> {house.status}
                         </span>
                       </Card.Text>
-                      <Button variant="danger" className="px-4 mt-2">
+                      <Button
+                        variant="danger"
+                        className="px-4 mt-2"
+                        onClick={() => handleDeleteHouse(house)}
+                      >
                         Xóa
                       </Button>
                     </Card.Body>
@@ -364,6 +388,12 @@ const ListHouse = () => {
         containerClassName="pagination"
         activeClassName="active"
         disabledClassName="disabled"
+      />
+
+      <DeleteHouse
+        show={isOpenModalDelete}
+        handleClose={handleTongleModalConfirm}
+        houseData={houseData}
       />
     </Container>
   );
