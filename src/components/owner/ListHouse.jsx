@@ -280,6 +280,7 @@ const ListHouse = () => {
 
         <Col md={2}>
           <Form.Select
+            className="custom-form-select"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -291,7 +292,7 @@ const ListHouse = () => {
         </Col>
         <Col md={2}>
           <Form.Select
-            className="no-scrollbar"
+            className="no-scrollbar custom-form-select"
             value={selectedWard}
             onChange={(e) => setSelectedWard(e.target.value)}
           >
