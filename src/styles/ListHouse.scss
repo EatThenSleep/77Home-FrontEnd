@@ -46,3 +46,39 @@
   color: #aaa;
   cursor: not-allowed;
 }
+
+div {
+ 
+  display: block;  
+  text-align: left;  
+}
+
+
+.custom-dropdown-toggle {
+  background-color: transparent; /* Đảm bảo nền trong suốt */
+  border: none; /* Xóa đường viền */
+  box-shadow: none; /* Xóa shadow mặc định */
+  padding-right: 2rem; /* Đảm bảo không bị mất cân đối */
+  position: relative;
+}
+
+.custom-dropdown-toggle::after {
+  display: none !important; /* Ẩn icon mũi tên */
+}
+
+.custom-form-select {
+  -webkit-appearance: none; 
+  -moz-appearance: none; 
+  appearance: none; 
+  background-image: none; 
+  background-color: transparent;
+  border: 1px solid #ccc; 
+  padding-right: 2rem; 
+  position: relative;
+}
+
+.custom-dropdown-menu {
+  width: 350px;
+  margin-top: 5px;
+  padding : 20px 30px;
+}
