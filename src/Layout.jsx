@@ -9,6 +9,7 @@ import DetailHouse from "./components/owner/DetailHouse";
 import UpdateHouse from "./components/owner/UpdateHouse";
 
 import Login from "./components/user/Login";
+import Register from "./components/user/Register";
 
 const Layout = () => {
   return (
@@ -23,6 +24,7 @@ const Layout = () => {
             <Route path=":id" element={<DetailHouse />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Suspense>
     </div>
