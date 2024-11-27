@@ -16,8 +16,8 @@ const ListHouse = () => {
   const [selectedAreaSize, setSelectedAreaSize] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [isOpenModalDelete , setOpenModalDelete] = useState(false);
-  const [houseData , setHouseData] = useState([]);
+  const [isOpenModalDelete, setOpenModalDelete] = useState(false);
+  const [houseData, setHouseData] = useState([]);
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
@@ -45,7 +45,7 @@ const ListHouse = () => {
       setWardList(res.data.data);
     }
   };
-  
+
   const fetchAllListHouse = async () => {
     const res = await axios.get("http://localhost:3000/houses");
     if (res && res.data) {
@@ -118,13 +118,18 @@ const ListHouse = () => {
     setCurrentPage(0);
   };
 
-    const handleTongleModalConfirm = () => {
+  const handleViewDetail = (houseId) => {
+    navigate(`/house/${houseId}`);
+  };
+
+  const handleTongleModalConfirm = () => {
     setOpenModalDelete(!isOpenModalDelete);
   };
-   const handleDeleteHouse = (house) => {
+  const handleDeleteHouse = (house) => {
     handleTongleModalConfirm(isOpenModalDelete);
-   setHouseData(house)
+    setHouseData(house);
   };
+
   return (
     <Container className="mt-4">
       {/* Tiêu đề */}
@@ -140,32 +145,6 @@ const ListHouse = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={selectedAreaSize}
-            onChange={(e) => setSelectedAreaSize(e.target.value)}
-          >
-            <option value="">Chọn diện tích</option>
-            <option value="20-40">20m² - 40m2</option>
-            <option value="40-60">40m² - 60m²</option>
-            <option value="60-80">60m² - 80m²</option>
-            <option value="80-100">80m² - 100m²</option>
-            {/* Thêm các tùy chọn khác nếu cần */}
-          </Form.Select>
-        </Col>
-        <Col md={2}>
-          <Form.Select
-            value={selectedPriceRange}
-            onChange={(e) => setSelectedPriceRange(e.target.value)}
-          >
-            <option value="">Chọn giá thuê</option>
-            <option value="1-3">1 triệu - 3 triệu</option>
-            <option value="3-5">3 triệu - 5 triệu</option>
-            <option value="5-7">5 triệu - 7 triệu</option>
-            <option value="7-10">7 triệu - 10 triệu</option>
-            {/* Thêm các tùy chọn khác nếu cần */}
-          </Form.Select>
         </Col>
         <Col md={2}>
           <Form.Select
@@ -204,7 +183,12 @@ const ListHouse = () => {
       <Row className="mt-5">
         {currentItems && currentItems.length > 0 ? (
           currentItems.map((house, index) => (
-            <Col md={12} key={house.id} className="mb-3">
+            <Col
+              md={12}
+              key={house.id}
+              className="mb-3"
+              onClick={() => handleViewDetail(house.id)}
+            >
               <Card className="p-3">
                 <Row>
                   <Col md={4}>
@@ -236,7 +220,11 @@ const ListHouse = () => {
                           <b>Trạng thái:</b> {house.status}
                         </span>
                       </Card.Text>
-                      <Button variant="danger" className="px-4 mt-2" onClick={() =>handleDeleteHouse(house)}>
+                      <Button
+                        variant="danger"
+                        className="px-4 mt-2"
+                        onClick={() => handleDeleteHouse(house)}
+                      >
                         Xóa
                       </Button>
                     </Card.Body>
@@ -262,9 +250,9 @@ const ListHouse = () => {
       />
 
       <DeleteHouse
-      show={isOpenModalDelete}
-      handleClose={handleTongleModalConfirm}
-      houseData={houseData}
+        show={isOpenModalDelete}
+        handleClose={handleTongleModalConfirm}
+        houseData={houseData}
       />
     </Container>
   );
