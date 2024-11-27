@@ -28,8 +28,8 @@ const ListHouse = () => {
 
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
-  const [isOpenModalDelete , setOpenModalDelete] = useState(false);
-  const [houseData , setHouseData] = useState([]);
+  const [isOpenModalDelete, setOpenModalDelete] = useState(false);
+  const [houseData, setHouseData] = useState([]);
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
@@ -57,7 +57,7 @@ const ListHouse = () => {
       setWardList(res.data.data);
     }
   };
-  
+
   const fetchAllListHouse = async () => {
     const res = await axios.get("http://localhost:3000/houses");
     if (res && res.data) {
@@ -109,13 +109,18 @@ const ListHouse = () => {
     setCurrentPage(0);
   };
 
-    const handleTongleModalConfirm = () => {
+  const handleViewDetail = (houseId) => {
+    navigate(`/house/${houseId}`);
+  };
+
+  const handleTongleModalConfirm = () => {
     setOpenModalDelete(!isOpenModalDelete);
   };
-   const handleDeleteHouse = (house) => {
+  const handleDeleteHouse = (house) => {
     handleTongleModalConfirm(isOpenModalDelete);
-   setHouseData(house)
+    setHouseData(house);
   };
+
   return (
     <Container className="mt-4">
       <Button
@@ -285,6 +290,7 @@ const ListHouse = () => {
 
         <Col md={2}>
           <Form.Select
+            className="custom-form-select"
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
@@ -296,7 +302,7 @@ const ListHouse = () => {
         </Col>
         <Col md={2}>
           <Form.Select
-            className="no-scrollbar"
+            className="no-scrollbar custom-form-select"
             value={selectedWard}
             onChange={(e) => setSelectedWard(e.target.value)}
           >
@@ -319,7 +325,12 @@ const ListHouse = () => {
       <Row className="mt-5">
         {currentItems && currentItems.length > 0 ? (
           currentItems.map((house, index) => (
-            <Col md={12} key={house.id} className="mb-3">
+            <Col
+              md={12}
+              key={house.id}
+              className="mb-3"
+              onClick={() => handleViewDetail(house.id)}
+            >
               <Card className="p-3">
                 <Row>
                   <Col md={4}>
@@ -350,7 +361,11 @@ const ListHouse = () => {
                           <b>Trạng thái:</b> {house.status}
                         </span>
                       </Card.Text>
-                      <Button variant="danger" className="px-4 mt-2" onClick={() =>handleDeleteHouse(house)}>
+                      <Button
+                        variant="danger"
+                        className="px-4 mt-2"
+                        onClick={() => handleDeleteHouse(house)}
+                      >
                         Xóa
                       </Button>
                     </Card.Body>
@@ -376,9 +391,9 @@ const ListHouse = () => {
       />
 
       <DeleteHouse
-      show={isOpenModalDelete}
-      handleClose={handleTongleModalConfirm}
-      houseData={houseData}
+        show={isOpenModalDelete}
+        handleClose={handleTongleModalConfirm}
+        houseData={houseData}
       />
     </Container>
   );
