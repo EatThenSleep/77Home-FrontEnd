@@ -5,6 +5,8 @@ import App from "./App";
 import { Suspense } from "react";
 import ListHouse from "./components/owner/ListHouse";
 import Login from "./components/user/Login";
+import Register from "./components/user/Register";
+
 const Layout = () => {
   return (
     <div>
@@ -16,6 +18,7 @@ const Layout = () => {
             <Route path="create" element={<CreateNewHouse />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </Suspense>
     </div>

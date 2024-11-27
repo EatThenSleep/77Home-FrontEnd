@@ -8,6 +8,7 @@ import { IoMdLock } from "react-icons/io";
 import { IoMailOutline } from "react-icons/io5";
 import { AiTwotoneEyeInvisible, AiFillEye } from "react-icons/ai";
 import "../../styles/Login.scss";
+import { Link } from "react-router-dom";
 
 const schema = yup.object({
   email: yup
@@ -177,13 +178,13 @@ const Login = () => {
           >
             Don&apos;t have an account?{" "}
           </span>
-          <a
-            href="#"
+          <Link
+            to="/register"
             style={{ color: "#5a67d8", fontSize: "0.7rem" }}
             className=" fw-semibold text-decoration-none"
           >
             Sign up
-          </a>
+          </Link>
         </div>
       </div>
     </Container>
