@@ -42,147 +42,148 @@ const Register = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 ">
-      <div className="p-4 bg-white rounded shadow" style={{ width: "400px" }}>
-        <h3 className="text-center mb-4 fw-bold">Sign up</h3>
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          {/* First name and Last name in the same row */}
-          <Row className="mb-3">
-            <Col>
-              <Form.Group controlId="formFirstName">
-                <Form.Label className="fw-bold">First name</Form.Label>
-                <Form.Control
-                  className=" fw-semibold"
-                  style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
-                  type="text"
-                  placeholder="First name"
-                  {...register("firstName")}
-                />
-              </Form.Group>
-              {errors.firstName && (
-                <div className="error-message">{errors.firstName?.message}</div>
-              )}
-            </Col>
-            <Col>
-              <Form.Group controlId="formLastName">
-                <Form.Label className="fw-bold">Last name</Form.Label>
-                <Form.Control
-                  className=" fw-semibold"
-                  style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
-                  type="text"
-                  placeholder="Last name"
-                  {...register("lastName")}
-                />
-              </Form.Group>
-              {errors.lastName && (
-                <div className="error-message">{errors.lastName?.message}</div>
-              )}
-            </Col>
-          </Row>
-          {/* Email */}
-          <Form.Group className="mb-3" controlId="formEmail">
-            <Form.Label className="fw-bold">Email</Form.Label>
-            <Form.Control
-              className=" fw-semibold"
-              style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
-              type="text"
-              placeholder="Enter your email"
-              {...register("email")}
-            />
-            {errors.email && (
-              <div className="error-message">{errors.email?.message}</div>
-            )}
-          </Form.Group>
-          {/* Password with visibility toggle */}
-          <Form.Group className="mb-3" controlId="formPassword">
-            <Form.Label className="fw-bold">Password</Form.Label>
-            <div
-              className="d-flex align-items-center border rounded "
-              style={{ backgroundColor: "#F5F5F5" }}
-            >
+    <div className="container"><div className="d-flex justify-content-center align-items-center vh-100 ">
+    <div className="p-4 bg-white rounded shadow" style={{ width: "400px" }}>
+      <h3 className="text-center mb-4 fw-bold">Sign up</h3>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        {/* First name and Last name in the same row */}
+        <Row className="mb-3">
+          <Col>
+            <Form.Group controlId="formFirstName">
+              <Form.Label className="fw-bold">First name</Form.Label>
               <Form.Control
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
                 className=" fw-semibold"
-                style={{
-                  fontSize: "0.8rem",
-                  backgroundColor: "#F5F5F5",
-                  border: "none",
-                }}
-                {...register("password")}
+                style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
+                type="text"
+                placeholder="First name"
+                {...register("firstName")}
               />
-              {showPassword ? (
-                <AiOutlineEyeInvisible
-                  className="text-muted ms-2"
-                  onClick={togglePasswordVisibility}
-                  style={{ cursor: "pointer" }}
-                />
-              ) : (
-                <AiFillEye
-                  className="text-muted ms-2"
-                  onClick={togglePasswordVisibility}
-                  style={{ cursor: "pointer" }}
-                />
-              )}
-            </div>
-
-            {errors.password && (
-              <div className="error-message">{errors.password?.message}</div>
+            </Form.Group>
+            {errors.firstName && (
+              <div className="error-message">{errors.firstName?.message}</div>
             )}
-          </Form.Group>
-          {/* Terms of Service */}
-          <Form.Group className="mb-3" controlId="formTerms">
-            <Form.Check
-              className="custom-checkbox"
-              type="checkbox"
-              label={
-                <>
-                  By signing up, I agree with the{" "}
-                  <a
-                    href="#terms"
-                    className="fw-bold"
-                    style={{ textDecoration: "none", color: "#4A4A4A" }}
-                  >
-                    Terms of Use
-                  </a>{" "}
-                  &{" "}
-                  <a
-                    href="#privacy"
-                    className="fw-bold"
-                    style={{ textDecoration: "none", color: "#4A4A4A" }}
-                  >
-                    Privacy Policy
-                  </a>
-                </>
-              }
-              {...register("terms")}
+          </Col>
+          <Col>
+            <Form.Group controlId="formLastName">
+              <Form.Label className="fw-bold">Last name</Form.Label>
+              <Form.Control
+                className=" fw-semibold"
+                style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
+                type="text"
+                placeholder="Last name"
+                {...register("lastName")}
+              />
+            </Form.Group>
+            {errors.lastName && (
+              <div className="error-message">{errors.lastName?.message}</div>
+            )}
+          </Col>
+        </Row>
+        {/* Email */}
+        <Form.Group className="mb-3" controlId="formEmail">
+          <Form.Label className="fw-bold">Email</Form.Label>
+          <Form.Control
+            className=" fw-semibold"
+            style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
+            type="text"
+            placeholder="Enter your email"
+            {...register("email")}
+          />
+          {errors.email && (
+            <div className="error-message">{errors.email?.message}</div>
+          )}
+        </Form.Group>
+        {/* Password with visibility toggle */}
+        <Form.Group className="mb-3" controlId="formPassword">
+          <Form.Label className="fw-bold">Password</Form.Label>
+          <div
+            className="d-flex align-items-center border rounded "
+            style={{ backgroundColor: "#F5F5F5" }}
+          >
+            <Form.Control
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              className=" fw-semibold"
+              style={{
+                fontSize: "0.8rem",
+                backgroundColor: "#F5F5F5",
+                border: "none",
+              }}
+              {...register("password")}
             />
-            {errors.terms && (
-              <div className="error-message">{errors.terms?.message}</div>
+            {showPassword ? (
+              <AiOutlineEyeInvisible
+                className="text-muted ms-2"
+                onClick={togglePasswordVisibility}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <AiFillEye
+                className="text-muted ms-2"
+                onClick={togglePasswordVisibility}
+                style={{ cursor: "pointer" }}
+              />
             )}
-          </Form.Group>
-          {/* Submit Button */}
-          <Button
-            style={{ backgroundColor: "#4A4A4A" }}
-            type="submit"
-            onClick={onSubmit}
-            className="w-100 fw-semibold"
-          >
-            Sign up
-          </Button>
-        </Form>
-        {/* Login Link */}
-        <div className="text-center mt-3">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            style={{ textDecoration: "none", color: "#4A4A4A" }}
-          >
-            Log in
-          </Link>
-        </div>
+          </div>
+
+          {errors.password && (
+            <div className="error-message">{errors.password?.message}</div>
+          )}
+        </Form.Group>
+        {/* Terms of Service */}
+        <Form.Group className="mb-3" controlId="formTerms">
+          <Form.Check
+            className="custom-checkbox"
+            type="checkbox"
+            label={
+              <>
+                By signing up, I agree with the{" "}
+                <a
+                  href="#terms"
+                  className="fw-bold"
+                  style={{ textDecoration: "none", color: "#4A4A4A" }}
+                >
+                  Terms of Use
+                </a>{" "}
+                &{" "}
+                <a
+                  href="#privacy"
+                  className="fw-bold"
+                  style={{ textDecoration: "none", color: "#4A4A4A" }}
+                >
+                  Privacy Policy
+                </a>
+              </>
+            }
+            {...register("terms")}
+          />
+          {errors.terms && (
+            <div className="error-message">{errors.terms?.message}</div>
+          )}
+        </Form.Group>
+        {/* Submit Button */}
+        <Button
+          style={{ backgroundColor: "#4A4A4A" }}
+          type="submit"
+          onClick={onSubmit}
+          className="w-100 fw-semibold"
+        >
+          Sign up
+        </Button>
+      </Form>
+      {/* Login Link */}
+      <div className="text-center mt-3">
+        Already have an account?{" "}
+        <Link
+          to="/login"
+          style={{ textDecoration: "none", color: "#4A4A4A" }}
+        >
+          Log in
+        </Link>
       </div>
     </div>
+  </div></div>
+    
   );
 };
 
