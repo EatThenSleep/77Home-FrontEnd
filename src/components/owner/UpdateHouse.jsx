@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import "../../styles/UpdateHouse.scss";
 import { getAllWard } from "../../service/apiService";
 import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const schema = yup.object({
   houseName: yup.string().required("Tên nhà trọ không được để trống!"),
   houseDescription: yup.string().required("Mô tả không được để trống!"),
@@ -68,6 +69,7 @@ const schema = yup.object({
 });
 
 const UpdateHouse = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const houseDetails = location.state || {};
   console.log("houseDetails", houseDetails);
@@ -364,6 +366,14 @@ const UpdateHouse = () => {
           </Col>
         </Row>
         <div className="mt-3 d-flex justify-content-end">
+          <Button
+            variant="light"
+            className="mx-3"
+            type="submit"
+            onClick={() => navigate("/house")}
+          >
+            Hủy
+          </Button>
           <Button variant="primary" type="submit" onClick={onSubmit}>
             Gửi thông tin
           </Button>
