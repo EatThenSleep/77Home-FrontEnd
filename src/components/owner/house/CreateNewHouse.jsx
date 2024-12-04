@@ -3,8 +3,8 @@ import { Form, Row, Col, Container, InputGroup, Button } from "react-bootstrap";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import "../../styles/CreateNewHouse.scss";
-import { getAllWard } from "../../service/apiService";
+import "../../../styles/CreateNewHouse.scss";
+import { getAllWard } from "../../../service/apiService";
 
 const schema = yup.object({
   houseName: yup.string().required("Tên nhà trọ không được để trống!"),

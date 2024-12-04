@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import CreateNewHouse from "./components/owner/CreateNewHouse";
-import ManageHouse from "./components/owner/ManageHouse";
+import CreateNewHouse from "./components/owner/house/CreateNewHouse";
+import ManageHouse from "./components/owner/house/ManageHouse";
 import App from "./App";
 import { Suspense } from "react";
-import ListHouse from "./components/owner/ListHouse";
-import DetailHouse from "./components/owner/DetailHouse";
-import UpdateHouse from "./components/owner/UpdateHouse";
+import ListHouse from "./components/owner/house/ListHouse";
+import DetailHouse from "./components/owner/house/DetailHouse";
+import UpdateHouse from "./components/owner/house/UpdateHouse";
 import Login from "./components/user/Login";
 import Register from "./components/user/Register";
 

@@ -3,8 +3,8 @@ import { Form, Row, Col, Container, InputGroup, Button } from "react-bootstrap";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import "../../styles/UpdateHouse.scss";
-import { getAllWard } from "../../service/apiService";
+import "../../../styles/UpdateHouse.scss";
+import { getAllWard } from "../../../service/apiService";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 const schema = yup.object({

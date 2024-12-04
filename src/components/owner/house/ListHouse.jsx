@@ -7,13 +7,13 @@ import {
   Card,
   Dropdown,
 } from "react-bootstrap";
-import { getAllWard } from "../../service/apiService";
+import { getAllWard } from "../../../service/apiService";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 
 import { Range } from "react-range";
-import "../../styles/ListHouse.scss";
+import "../../../styles/ListHouse.scss";
 import { useNavigate } from "react-router-dom";
 import DeleteHouse from "./DeleteHouse";
 const ListHouse = () => {
@@ -341,7 +341,7 @@ const ListHouse = () => {
                     <Card.Body>
                       <Card.Title>{house.name}</Card.Title>
                       <Card.Text>
-                        <strong>{house.price}</strong> <br />
+                        <b>Giá:</b> <span>{house.price} đ</span> <br />
                         <b>Mô tả:</b> {truncateText(house.description, 85)}
                         <br />
                         <span>
