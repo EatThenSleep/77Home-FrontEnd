@@ -11,6 +11,7 @@ import Register from "./components/user/Register";
 import ManageBuilding from "./components/owner/building/ManageBuilding";
 import CreateNewBuilding from "./components/owner/building/CreateNewBuilding";
 import ListBuilding from "./components/owner/building/ListBuilding";
+import DetailBuilding from "./components/owner/building/DetailBuilding";
 
 const Layout = () => {
   return (
@@ -27,6 +28,7 @@ const Layout = () => {
           <Route path="/building" element={<ManageBuilding />}>
             <Route index element={<ListBuilding />} />
             <Route path="create" element={<CreateNewBuilding />} />
+            <Route path=":id" element={<DetailBuilding />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
