@@ -8,6 +8,7 @@ import DetailHouse from "./components/owner/house/DetailHouse";
 import UpdateHouse from "./components/owner/house/UpdateHouse";
 import Login from "./components/user/Login";
 import Register from "./components/user/Register";
+import ManageBuilding from "./components/owner/building/ManageBuilding";
 
 const Layout = () => {
   return (
@@ -20,6 +21,9 @@ const Layout = () => {
             <Route path="create" element={<CreateNewHouse />} />
             <Route path="update" element={<UpdateHouse />} />
             <Route path=":id" element={<DetailHouse />} />
+          </Route>
+          <Route path="/building" element={<ManageBuilding />}>
+            
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
