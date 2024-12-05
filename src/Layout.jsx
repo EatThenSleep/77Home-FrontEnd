@@ -12,6 +12,7 @@ import ManageBuilding from "./components/owner/building/ManageBuilding";
 import CreateNewBuilding from "./components/owner/building/CreateNewBuilding";
 import ListBuilding from "./components/owner/building/ListBuilding";
 import DetailBuilding from "./components/owner/building/DetailBuilding";
+import UpdateBuilding from "./components/owner/building/UpdateBuilding";
 
 const Layout = () => {
   return (
@@ -27,7 +28,8 @@ const Layout = () => {
           </Route>
           <Route path="/building" element={<ManageBuilding />}>
             <Route index element={<ListBuilding />} />
-            <Route path="create" element={<CreateNewBuilding />} />
+            <Route path="create" element={<CreateNewBuilding />} />           
+            <Route path="update" element={<UpdateBuilding />} />  
             <Route path=":id" element={<DetailBuilding />} />
           </Route>
           <Route path="/login" element={<Login />} />
