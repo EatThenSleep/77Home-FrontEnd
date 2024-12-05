@@ -15,8 +15,8 @@ import ReactPaginate from "react-paginate";
 import { Range } from "react-range";
 import "../../../styles/ListHouse.scss";
 import { useNavigate } from "react-router-dom";
-import DeleteHouse from "../house/DeleteHouse";
-import DatePicker from "react-datepicker";
+import DeleteBuilding from "./DeleteBuilding";
+
 const ListBuilding = () => {
   const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
@@ -26,8 +26,8 @@ const ListBuilding = () => {
   const [selectedWard, setSelectedWard] = useState("");
 
   const [areaSizeRange, setAreaSizeRange] = useState([0, 10000]);
+  const [searchYear, setSearchYear] = useState();
 
-  const [selectedYear, setSelectedYear] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpenModalDelete, setOpenModalDelete] = useState(false);
@@ -88,10 +88,11 @@ const ListBuilding = () => {
       const areaSizeMatch =
         areaSize >= areaSizeRange[0] && areaSize <= areaSizeRange[1];
 
-      const yearBuilt = building.yearBuilt;
+      const parsedSearchYear = parseInt(searchYear, 10);
       const yearMatch =
-        !selectedYear || yearBuilt === selectedYear || yearBuilt === null;
-
+        !searchYear ||
+        (parsedSearchYear && building.yearBuilt === parsedSearchYear);
+      // console.log("abc :", building.yearBuilt, searchYear);
       const statusMatch =
         selectedStatus === "" ||
         statusMapping[building.status] === selectedStatus;
@@ -222,33 +223,14 @@ const ListBuilding = () => {
           </Dropdown>
         </Col>
         <Col md={2}>
-          <Dropdown className="border rounded">
-            <Dropdown.Toggle variant="none" className="custom-dropdown-toggle">
-              Chọn năm xây dựng
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu className="custom-dropdown-menu">
-              <h5 className="fw-bold">Năm xây dựng</h5>
-              <Row>
-                <Col md={12}>
-                  <DatePicker
-                    selected={
-                      selectedYear ? new Date(selectedYear, 0, 1) : null
-                    }
-                    onChange={(date) =>
-                      setSelectedYear(date ? date.getFullYear() : null)
-                    }
-                    showYearPicker
-                    dateFormat="yyyy"
-                    className="form-control mt-2"
-                    placeholderText="Chọn năm xây dựng"
-                  />
-                </Col>
-              </Row>
-            </Dropdown.Menu>
-          </Dropdown>
+          <Form.Control
+            type="text"
+            className="custom-form-control"
+            placeholder="Năm xây dựng"
+            value={searchYear}
+            onChange={(e) => setSearchYear(e.target.value)}
+          />
         </Col>
-
         <Col md={2}>
           <Form.Select
             className="custom-form-select"
@@ -348,7 +330,7 @@ const ListBuilding = () => {
         disabledClassName="disabled"
       />
 
-      <DeleteHouse
+      <DeleteBuilding
         show={isOpenModalDelete}
         handleClose={handleTongleModalConfirm}
         buildingData={buildingData}
