@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,7 +19,7 @@ const schema = yup.object({
   password: yup.string().required("Password không được để trống!"),
 });
 
-const Login = () => {
+const Login = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -32,7 +33,10 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const onSubmit = async (data) => {
+  const handleFormSubmit = (data) => {
+    if (onSubmit) {
+      onSubmit(data);  
+    }
     console.log("data", data);
   };
 
@@ -45,7 +49,6 @@ const Login = () => {
         className="p-4 bg-white rounded shadow"
         style={{ maxWidth: "400px", width: "100%" }}
       >
-        {/* Title */}
         <h3
           className="text-center mb-4 fw-bold"
           style={{ marginRight: "65%", fontSize: "1.5rem" }}
@@ -53,9 +56,7 @@ const Login = () => {
           Sign in
         </h3>
 
-        {/* Form */}
-        <Form onSubmit={handleSubmit(onSubmit)}>
-          {/* Email Input */}
+        <Form onSubmit={handleSubmit(handleFormSubmit)}>
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Label className="fw-semibold" style={{ fontSize: "0.7rem" }}>
               Email
@@ -79,7 +80,6 @@ const Login = () => {
             )}
           </Form.Group>
 
-          {/* Password Input */}
           <Form.Group className="mb-3" controlId="formPassword">
             <Form.Label className="fw-semibold" style={{ fontSize: "0.7rem" }}>
               Password
@@ -99,12 +99,14 @@ const Login = () => {
               />
               {showPassword ? (
                 <AiFillEye
+                  data-testid="toggle-password-visibility"
                   className="text-muted ms-2"
                   onClick={togglePasswordVisibility}
                   style={{ cursor: "pointer" }}
                 />
               ) : (
                 <AiTwotoneEyeInvisible
+                  data-testid="toggle-password-visibility"
                   className="text-muted ms-2"
                   onClick={togglePasswordVisibility}
                   style={{ cursor: "pointer" }}
@@ -129,7 +131,6 @@ const Login = () => {
             </div>
           </Form.Group>
 
-          {/* Sign In Button */}
           <Button
             variant="primary"
             type="submit"
@@ -145,7 +146,6 @@ const Login = () => {
           </Button>
         </Form>
 
-        {/* Divider */}
         <div
           className="text-center text-muted mt-3"
           style={{ fontSize: "0.6rem", fontWeight: "bold" }}
@@ -153,7 +153,6 @@ const Login = () => {
           OR CONTINUE WITH
         </div>
 
-        {/* Social Login Buttons */}
         <Row className="text-center mb-5">
           <Col>
             <Button className="btn-social btn-google" variant="outline-danger">
@@ -170,7 +169,6 @@ const Login = () => {
           </Col>
         </Row>
 
-        {/* Sign Up Link */}
         <div className="text-center">
           <span
             className="text-muted fw-semibold"
