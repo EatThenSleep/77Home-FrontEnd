@@ -1,11 +1,10 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { vi } from "vitest";
 import Login from "../components/user/Login";
 
 describe("Login Component", () => {
-  test("renders Login component with all elements", () => {
+  test("renders all elements", () => {
     render(
       <MemoryRouter>
         <Login />
@@ -22,7 +21,7 @@ describe("Login Component", () => {
     ).toBeInTheDocument();
   });
 
-  test("shows validation errors when submitting empty form", async () => {
+  test("yupSchema", async () => {
     render(
       <MemoryRouter>
         <Login />
@@ -39,28 +38,7 @@ describe("Login Component", () => {
     ).toBeInTheDocument();
   });
 
-  // test("toggles password visibility", async () => {
-  //   render(
-  //     <MemoryRouter>
-  //       <Login />
-  //     </MemoryRouter>
-  //   );
-
-  //   const passwordInput = screen.getByPlaceholderText(/enter password/i);
-  //   const toggleVisibilityButton = screen.getByTestId("toggle-password-visibility");
-
-  //   expect(passwordInput).toHaveAttribute("type", "password");
-
-  //   fireEvent.click(toggleVisibilityButton);
-  //   await screen.findByPlaceholderText(/enter password/i);
-  //   expect(passwordInput).toHaveAttribute("type", "text");
-
-  //   fireEvent.click(toggleVisibilityButton);
-  //   await screen.findByPlaceholderText(/enter password/i);
-  //   expect(passwordInput).toHaveAttribute("type", "password");
-  // });
-
-  test("handles form submission correctly", async () => {
+  test("handleFormSubmitFunction", async () => {
     const mockOnSubmit = vi.fn();
 
     render(
@@ -70,10 +48,10 @@ describe("Login Component", () => {
     );
 
     fireEvent.change(screen.getByPlaceholderText(/enter email/i), {
-      target: { value: "test@example.com" },
+      target: { value: "thanhlich2103gg@gmail.com" },
     });
     fireEvent.change(screen.getByPlaceholderText(/enter password/i), {
-      target: { value: "password123" },
+      target: { value: "27092002Tl@" },
     });
 
     fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
@@ -81,8 +59,8 @@ describe("Login Component", () => {
     await screen.findByRole("button", { name: /sign in/i });
 
     expect(mockOnSubmit).toHaveBeenCalledWith({
-      email: "test@example.com",
-      password: "password123",
+      email: "thanhlich2103gg@gmail.com",
+      password: "27092002Tl@",
     });
   });
 });
