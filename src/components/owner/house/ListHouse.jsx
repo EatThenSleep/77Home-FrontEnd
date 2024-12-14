@@ -59,15 +59,16 @@ const ListHouse = () => {
   };
 
   const fetchAllListHouse = async () => {
-    const res = await axios.get("http://localhost:3000/houses");
-    if (res && res.data) {
-      setListHouse(res.data);
-      setFilteredHouses(res.data);
+    const {data} = await axios.get("http://localhost:8080/api/v1/house");
+    if (data) {
+      setListHouse(data.DT);
+      setFilteredHouses(data.DT);
     }
   };
   const statusMapping = {
-    "Đã thuê": "rented",
-    "Còn trống": "available",
+    1: "Đã thuê",
+    2: "Còn trống",
+    3: "Đang bảo trì",
   };
   const filterHouses = () => {
     return listHouse.filter((house) => {
@@ -295,8 +296,9 @@ const ListHouse = () => {
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
             <option value="">Chọn trạng thái</option>
-            <option value="available">Còn trống</option>
-            <option value="rented">Đã thuê</option>
+            <option value="1">Đã thuê</option>
+            <option value="2">Còn trống</option>
+            <option value="3">Đang bảo trì</option>
             {/* Thêm các trạng thái khác nếu cần */}
           </Form.Select>
         </Col>
@@ -331,7 +333,7 @@ const ListHouse = () => {
                   <Col md={4}>
                     <Card.Img
                       variant="top"
-                      src={house.image}
+                      src={house.avatar}
                       alt={`Hình ảnh của ${house.name}`}
                       className="image-house"
                       onClick={() => handleViewDetail(house.id)}
@@ -341,12 +343,11 @@ const ListHouse = () => {
                     <Card.Body>
                       <Card.Title>{house.name}</Card.Title>
                       <Card.Text>
-                        <b>Giá:</b> <span>{house.price} đ</span> <br />
+                        <b>Năm xây dựng:</b> <span>{house.yearBuilt} đ</span> <br />
                         <b>Mô tả:</b> {truncateText(house.description, 85)}
                         <br />
                         <span>
-                          <b>Địa chỉ:</b> {house.street} , {house.ward} ,{" "}
-                          {house.district} , {house.province}
+                          <b>Địa chỉ:</b>{house.address}
                         </span>
                         <br />
                         <span>
@@ -354,7 +355,7 @@ const ListHouse = () => {
                         </span>
                         <br />
                         <span>
-                          <b>Trạng thái:</b> {house.status}
+                          <b>Trạng thái:</b> {statusMapping[house.status]}
                         </span>
                       </Card.Text>
                       <Button
