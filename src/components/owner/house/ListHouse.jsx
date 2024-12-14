@@ -122,6 +122,13 @@ const ListHouse = () => {
     setHouseData(house);
   };
 
+  const handleDeleteSuccess = (houseId) => {
+    const updatedList = listHouse.filter((house) => house.id !== houseId);
+    setListHouse(updatedList);
+    setFilteredHouses(updatedList);
+    setOpenModalDelete(false); 
+  };
+
   return (
     <Container className="mt-4">
       <Button
@@ -391,6 +398,7 @@ const ListHouse = () => {
         show={isOpenModalDelete}
         handleClose={handleTongleModalConfirm}
         houseData={houseData}
+        onDeleteSuccess={handleDeleteSuccess}
       />
     </Container>
   );
