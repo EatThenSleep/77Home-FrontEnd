@@ -7,7 +7,7 @@ import {
   Card,
   Dropdown,
 } from "react-bootstrap";
-import { getAllWard } from "../../../service/apiService";
+import { getAllWard } from "../../../service/wardService";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
