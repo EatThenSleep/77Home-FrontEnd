@@ -329,7 +329,7 @@ const CreateNewBuilding = () => {
                 <option value="3">Khu quy hoạch</option>
               </Form.Control>
               <Form.Control.Feedback type="invalid">
-                {errors.status?.message}
+                {errors.region?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
