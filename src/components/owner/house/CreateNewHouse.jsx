@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "../../../styles/CreateNewHouse.scss";
-import { getAllWard } from "../../../service/apiService";
+import { getAllWard } from "../../../service/wardService";
 
 const schema = yup.object({
   houseName: yup.string().required("Tên nhà trọ không được để trống!"),

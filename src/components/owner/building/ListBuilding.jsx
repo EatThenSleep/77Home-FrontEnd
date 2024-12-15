@@ -7,7 +7,7 @@ import {
   Card,
   Dropdown,
 } from "react-bootstrap";
-import { getAllWard } from "../../../service/apiService";
+import { getAllWard } from "../../../service/wardService";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
@@ -53,9 +53,9 @@ const ListBuilding = () => {
   };
   const fetchAllWard = async () => {
     const res = await getAllWard();
-
-    if (res && res.data && res.data.data) {
-      setWardList(res.data.data);
+    console.log("data", res.DT);
+    if (res && res.DT) {
+      setWardList(res.DT);
     }
   };
 

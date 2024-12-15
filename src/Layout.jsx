@@ -1,3 +1,4 @@
+import { ToastContainer } from "react-toastify";
 import { Route, Routes } from "react-router-dom";
 import CreateNewHouse from "./components/owner/house/CreateNewHouse";
 import ManageHouse from "./components/owner/house/ManageHouse";
@@ -28,13 +29,25 @@ const Layout = () => {
           </Route>
           <Route path="/building" element={<ManageBuilding />}>
             <Route index element={<ListBuilding />} />
-            <Route path="create" element={<CreateNewBuilding />} />           
-            <Route path="update" element={<UpdateBuilding />} />  
+            <Route path="create" element={<CreateNewBuilding />} />
+            <Route path="update" element={<UpdateBuilding />} />
             <Route path=":id" element={<DetailBuilding />} />
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </Suspense>
     </div>
   );
