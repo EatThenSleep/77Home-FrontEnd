@@ -16,6 +16,6 @@ export const updateBuilding = (data) => {
   return axios.post("http://localhost:8080/api/v1/building", { ...data });
 };
 
-export const deleteBuilding = (data) => {
-  return axios.post("http://localhost:8080/api/v1/building", { ...data });
+export const deleteBuilding = (id) => {
+  return axios.delete(`/building/${id}`);
 };
