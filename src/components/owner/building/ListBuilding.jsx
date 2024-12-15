@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Container,
   Row,
@@ -39,7 +40,7 @@ const ListBuilding = () => {
   useEffect(() => {
     fetchAllWard();
     fetchAllListBuilding();
-  }, []);
+  }, [ListBuilding]);
 
   const truncateText = (text, maxLength) => {
     return text.length > maxLength
@@ -57,7 +58,7 @@ const ListBuilding = () => {
   };
   const fetchAllWard = async () => {
     const res = await getAllWard();
-    console.log("ward list", res);
+
     if (res && res.DT) {
       setWardList(res.DT);
     }
@@ -65,7 +66,7 @@ const ListBuilding = () => {
 
   const fetchAllListBuilding = async () => {
     const res = await getAllBuilding();
-    console.log(" building data", res);
+
     if (res && res.DT) {
       setListBuilding(res.DT);
       setFilteredbuildings(res.DT);
@@ -189,6 +190,7 @@ const ListBuilding = () => {
                     <div
                       {...props}
                       style={{
+                        // eslint-disable-next-line react/prop-types
                         ...props.style,
                         height: "6px",
                         width: "100%",
@@ -275,7 +277,7 @@ const ListBuilding = () => {
       {/* Danh sách nhà trọ */}
       <Row className="mt-5">
         {currentItems && currentItems.length > 0 ? (
-          currentItems.map((building, index) => (
+          currentItems.map((building) => (
             <Col md={12} key={building.id} className="mb-3">
               <Card className="p-3">
                 <Row>
