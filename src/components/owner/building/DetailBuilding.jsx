@@ -1,4 +1,4 @@
-import { Container, Row, Col, Button, ListGroup, Card } from "react-bootstrap";
+import { Row, Col, Button, ListGroup, Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaImage } from "react-icons/fa6";
@@ -17,6 +17,7 @@ const DetailBuilding = () => {
   const fetchBuildingById = async () => {
     try {
       const res = await getBuildingDetail(id);
+      console.log("data", res.DT);
       if (res && res.DT) {
         setDetailBuilding(res.DT);
       }
@@ -63,8 +64,8 @@ const DetailBuilding = () => {
                 {detailBuilding.name || "Không có dữ liệu"}
               </ListGroup.Item>
               <ListGroup.Item>
-                <strong>Địa chỉ:</strong>{" "}
-                {detailBuilding.address || "Không có dữ liệu"}
+                <strong>Địa chỉ:</strong> {detailBuilding.address},
+                <span> phường {detailBuilding?.ward?.name || ""}</span>
               </ListGroup.Item>
               <ListGroup.Item>
                 <strong>Khu vực:</strong>{" "}
@@ -125,7 +126,9 @@ const DetailBuilding = () => {
               <Button
                 variant="warning"
                 onClick={() =>
-                  navigate("/building/update", { state: detailBuilding })
+                  navigate(`/building/update/${detailBuilding.id}`, {
+                    state: detailBuilding,
+                  })
                 }
               >
                 Chỉnh sửa

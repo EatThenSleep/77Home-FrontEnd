@@ -30,7 +30,7 @@ const Layout = () => {
           <Route path="/building" element={<ManageBuilding />}>
             <Route index element={<ListBuilding />} />
             <Route path="create" element={<CreateNewBuilding />} />
-            <Route path="update" element={<UpdateBuilding />} />
+            <Route path="update/:id" element={<UpdateBuilding />} />
             <Route path=":id" element={<DetailBuilding />} />
           </Route>
           <Route path="/login" element={<Login />} />
