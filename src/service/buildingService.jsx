@@ -8,8 +8,8 @@ export const getAllBuilding = () => {
   return axios.get("/building");
 };
 
-export const getBuildingDetail = (data) => {
-  return axios.post("http://localhost:8080/api/v1/building", { ...data });
+export const getBuildingDetail = (id) => {
+  return axios.get(`/building/${id}`);
 };
 
 export const updateBuilding = (data) => {
