@@ -46,15 +46,21 @@ const ListHouse = () => {
       : text;
   };
 
+  const statusMapping = {
+    1: "Đã thuê",
+    2: "Còn trống",
+    3: "Đang bảo trì",
+  };
+
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % filteredHouses.length;
     setCurrentPage(event.selected);
   };
-  const fetchAllWard = async () => {
-    const res = await getAllWard();
 
-    if (res && res.data && res.data.data) {
-      setWardList(res.data.data);
+  const fetchAllWard = async () => {
+    const {DT} = await getAllWard();
+
+    if (DT) {
+      setWardList(DT);
     }
   };
 
@@ -65,50 +71,43 @@ const ListHouse = () => {
       setFilteredHouses(data.DT);
     }
   };
-  const statusMapping = {
-    1: "Đã thuê",
-    2: "Còn trống",
-    3: "Đang bảo trì",
-  };
+  
   const filterHouses = () => {
-    return listHouse.filter((house) => {
-      const nameMatch =
-        !searchTerm ||
-        house.name.toLowerCase().includes(searchTerm.toLowerCase());
-
-      const wardMatch =
-        selectedWard === "" ||
-        house.ward
-          .toLowerCase()
-          .replace("phường ", "")
-          .includes(selectedWard.toLowerCase());
-
-      // Price filter logic
-      console.log("price range :", priceRange);
-      const housePrice = parseInt(house.price.replace(/\D/g, "")); // remove non-numeric characters (e.g. currency symbols)
-      const priceMatch =
-        housePrice >= priceRange[0] * 1000000 &&
-        housePrice <= priceRange[1] * 1000000;
-      // Area size filter logic
-
-      console.log("area size range :", areaSizeRange);
-      const areaSize = parseInt(house.area.replace(/\D/g, ""), 10); // Loại bỏ ký tự không phải số và chuyển thành số nguyên
+    return listHouse.filter((building) => {
+      const buildingName = building.name.toLowerCase();
+      const searchTermLower = searchTerm.toLowerCase();
+      const nameMatch = !searchTerm || buildingName.includes(searchTermLower);
+  
+      const areaSize =
+        typeof building.area === "string"
+          ? parseInt(building.area.replace(/\D/g, ""), 10)
+          : building.area;
       const areaSizeMatch =
         areaSize >= areaSizeRange[0] && areaSize <= areaSizeRange[1];
+  
+      const housePrice = building.price
+        ? parseInt(building.price.replace(/\D/g, ""), 10)
+        : 0; // Default to 0 if price is undefined or invalid
+      const priceMatch =
+        housePrice >= priceRange[0] * 1000000 && housePrice <= priceRange[1] * 1000000;
+  
       const statusMatch =
-        selectedStatus === "" || statusMapping[house.status] === selectedStatus;
-
-      return (
-        nameMatch && wardMatch && priceMatch && areaSizeMatch && statusMatch
-      );
+        selectedStatus === "" || building.status === parseInt(selectedStatus, 10);
+  
+      const wardMatch =
+        selectedWard === "" || building.ward_id === parseInt(selectedWard, 10);
+  
+      return nameMatch && areaSizeMatch && statusMatch && priceMatch && wardMatch;
     });
   };
-
+  
+  
   const handleSearch = () => {
     const filteredHouses = filterHouses();
     setFilteredHouses(filteredHouses);
-    setCurrentPage(0);
+    setCurrentPage(0); // Reset to the first page when applying filters
   };
+  
 
   const handleViewDetail = (houseId) => {
     navigate(`/house/${houseId}`);
@@ -310,14 +309,14 @@ const ListHouse = () => {
           </Form.Select>
         </Col>
         <Col md={2}>
-          <Form.Select
+        <Form.Select
             className="no-scrollbar custom-form-select"
             value={selectedWard}
             onChange={(e) => setSelectedWard(e.target.value)}
           >
             <option value="">Chọn phường</option>
             {wardList.map((ward) => (
-              <option key={ward.id} value={ward.name}>
+              <option key={ward.id} value={ward.id}>
                 {ward.name}
               </option>
             ))}
@@ -350,11 +349,11 @@ const ListHouse = () => {
                     <Card.Body>
                       <Card.Title>{house.name}</Card.Title>
                       <Card.Text>
-                        <b>Năm xây dựng:</b> <span>{house.yearBuilt} đ</span> <br />
+                        <b>Năm xây dựng:</b> <span>{house.yearBuilt}</span> <br />
                         <b>Mô tả:</b> {truncateText(house.description, 85)}
                         <br />
                         <span>
-                          <b>Địa chỉ:</b>{house.address}
+                          <b>Địa chỉ:</b> {house.address}
                         </span>
                         <br />
                         <span>
