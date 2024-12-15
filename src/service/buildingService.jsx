@@ -12,8 +12,8 @@ export const getBuildingDetail = (id) => {
   return axios.get(`/building/${id}`);
 };
 
-export const updateBuilding = (data) => {
-  return axios.post("http://localhost:8080/api/v1/building", { ...data });
+export const updateBuilding = (id, data) => {
+  return axios.put(`/building/${id}`, data);
 };
 
 export const deleteBuilding = (id) => {
