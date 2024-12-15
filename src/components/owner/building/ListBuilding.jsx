@@ -40,7 +40,7 @@ const ListBuilding = () => {
   useEffect(() => {
     fetchAllWard();
     fetchAllListBuilding();
-  }, [ListBuilding]);
+  }, []);
 
   const truncateText = (text, maxLength) => {
     return text.length > maxLength
@@ -347,6 +347,7 @@ const ListBuilding = () => {
         show={isOpenModalDelete}
         handleClose={handleTongleModalConfirm}
         buildingData={buildingData}
+        fetchAllListBuilding={fetchAllListBuilding}
       />
     </Container>
   );
