@@ -7,16 +7,15 @@ import {
   Card,
   Dropdown,
 } from "react-bootstrap";
-import { getAllWard } from "../../../service/wardService";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ReactPaginate from "react-paginate";
 
 import { Range } from "react-range";
 import "../../../styles/ListHouse.scss";
 import { useNavigate } from "react-router-dom";
 import DeleteBuilding from "./DeleteBuilding";
-
+import { getAllWard } from "../../../service/wardService";
+import { getAllBuilding } from "../../../service/buildingService";
 const ListBuilding = () => {
   const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
@@ -48,33 +47,31 @@ const ListBuilding = () => {
       : text;
   };
 
+  const statusMapping = {
+    1: "Đang hoạt động",
+    2: "Đang sửa chữa",
+    3: "Ngừng hoạt động",
+  };
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
   const fetchAllWard = async () => {
     const res = await getAllWard();
-    console.log("data", res.DT);
+    console.log("ward list", res);
     if (res && res.DT) {
       setWardList(res.DT);
     }
   };
 
   const fetchAllListBuilding = async () => {
-    const res = await axios.get("http://localhost:3000/building");
-    if (res && res.data) {
-      setListBuilding(res.data);
-      setFilteredbuildings(res.data);
+    const res = await getAllBuilding();
+    console.log(" building data", res);
+    if (res && res.DT) {
+      setListBuilding(res.DT);
+      setFilteredbuildings(res.DT);
     }
   };
-  const statusMapping = {
-    "Đã thuê": "rented",
-    "Còn trống": "available",
-  };
-  const extractWard = (address) => {
-    const wardRegex = /Phường\s+([^\d,]+)/i;
-    const match = address.match(wardRegex);
-    return match ? match[1].trim() : "";
-  };
+
   const filterBuildings = () => {
     return ListBuilding.filter((building) => {
       const buildingName = building.name.toLowerCase();
@@ -95,14 +92,11 @@ const ListBuilding = () => {
       // console.log("abc :", building.yearBuilt, searchYear);
       const statusMatch =
         selectedStatus === "" ||
-        statusMapping[building.status] === selectedStatus;
-
-      const buildingWard = extractWard(building.address).toLowerCase();
-
-      const selectedWardLower = selectedWard.toLowerCase();
+        building.status === parseInt(selectedStatus, 10);
 
       const wardMatch =
-        selectedWard === "" || buildingWard.includes(selectedWardLower);
+        selectedWard === "" || building.ward_id === parseInt(selectedWard, 10);
+      console.log("selected ward", building.ward_id, selectedWard);
       return (
         nameMatch && areaSizeMatch && statusMatch && yearMatch && wardMatch
       );
@@ -184,7 +178,7 @@ const ListBuilding = () => {
                   />
                 </Col>
               </Row>
-              <div className="slider-container mt-4">
+              <div className="d-flex justify-content-center flex-wrap mt-3">
                 <Range
                   step={1}
                   min={0}
@@ -201,6 +195,19 @@ const ListBuilding = () => {
                         backgroundColor: "#ccc",
                       }}
                     >
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: `${(areaSizeRange[0] / 10000) * 100}%`,
+                          width: `${
+                            ((areaSizeRange[1] - areaSizeRange[0]) / 10000) *
+                            100
+                          }%`,
+                          height: "100%",
+                          backgroundColor: "#007bff",
+                          transition: "all 0.3s ease",
+                        }}
+                      />
                       {children}
                     </div>
                   )}
@@ -213,6 +220,7 @@ const ListBuilding = () => {
                         width: "20px",
                         backgroundColor: "#007bff",
                         borderRadius: "50%",
+                        border: "2px solid #007bff",
                         cursor: "pointer",
                       }}
                     />
@@ -238,8 +246,9 @@ const ListBuilding = () => {
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
             <option value="">Chọn trạng thái</option>
-            <option value="available">Còn trống</option>
-            <option value="rented">Đã thuê</option>
+            <option value="1">Đang hoạt động</option>
+            <option value="2">Đang sửa chữa</option>
+            <option value="3">Ngừng hoạt động</option>
           </Form.Select>
         </Col>
         <Col md={2}>
@@ -250,7 +259,7 @@ const ListBuilding = () => {
           >
             <option value="">Chọn phường</option>
             {wardList.map((ward) => (
-              <option key={ward.id} value={ward.name}>
+              <option key={ward.id} value={ward.id}>
                 {ward.name}
               </option>
             ))}
@@ -286,7 +295,9 @@ const ListBuilding = () => {
                         <b>Mô tả:</b> {truncateText(building.description, 85)}
                         <br />
                         <span>
-                          <b>Địa chỉ:</b> {building.address}
+                          <b>Địa chỉ:</b> {building.address} ,
+                          <span>phường </span>
+                          {building.ward.name}
                         </span>
                         <br />
                         <span>
@@ -298,7 +309,7 @@ const ListBuilding = () => {
                         </span>
                         <br />
                         <span>
-                          <b>Trạng thái:</b> {building.status}
+                          <b>Trạng thái:</b> {statusMapping[building.status]}
                         </span>
                       </Card.Text>
                       <Button
