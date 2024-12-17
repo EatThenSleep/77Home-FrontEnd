@@ -52,7 +52,7 @@ const schema = yup.object({
   longitude: yup.number().typeError("Kinh độ không được để trống!"),
   latitude: yup.number().typeError("Vĩ độ không được để trống!"),
   region: yup.string().required("Vùng không được để trống!"),
-  position: yup.number().required("Vị trí không được để trống!"),
+  position: yup.string().required("Vị trí không được để trống!"),
   wardId: yup.string().required("Phường/Xã không được để trống!"),
   ownerId: yup.string().required("Chủ sỡ hữu không được để trống!"),
 });
@@ -380,10 +380,10 @@ const CreateNewHouse = () => {
         <Row className="mb-3">
         <Col md={6}>
             <Form.Group controlId="position">
-              <Form.Label>Khoảng cách vị trí</Form.Label>
+              <Form.Label>Vị trí</Form.Label>
               <Form.Control
-                type="number"
-                placeholder="Nhập khoảng cách vị trí"
+                type="text"
+                placeholder="Nhập vị trí"
                 {...register("position")}
                 isInvalid={errors.position}
               />
