@@ -5,26 +5,36 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import "../../styles/Register.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const schema = yup.object({
   firstName: yup.string().required("Bắt buộc nhập"),
   lastName: yup.string().required("Bắt buộc nhập"),
   email: yup.string().required("Bắt buộc nhập").email("Sai cú pháp email"),
+  phoneNumber: yup
+    .string()
+    .required("Bắt buộc nhập")
+    .matches(/^\d{10}$/, "Số điện thoại phải có 10 chữ số"),
+  citizenNumber: yup
+    .string()
+    .required("Bắt buộc nhập")
+    .matches(/^\d{12}$/, "Số căn cước công dân phải có 12 chữ số"),
   password: yup
     .string()
     .required("Bắt buộc nhập")
     .test(
       "password-strength",
-      "Mật khẩu phải có ít nhất có 8 ký tự, phân biệt chữ thường, chữ hoa",
-      (value) =>
-        value && value.length >= 8 && /[a-z]/.test(value) && /[A-Z]/.test(value)
+      "Mật khẩu phải có ít nhất có 6 ký tự",
+      (value) => value && value.length >= 6
     ),
   terms: yup.boolean().oneOf([true], "Bắt buộc nhập"),
 });
 
 // eslint-disable-next-line react/prop-types
 const Register = ({ onSubmit }) => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -38,13 +48,42 @@ const Register = ({ onSubmit }) => {
     setShowPassword(!showPassword);
   };
 
-  const handleFormSubmit = (data) => {
-    if (onSubmit) {
-      onSubmit(data);
-    }
-    console.log("data", data);
-  };
+  const handleFormSubmit = async (data) => {
+    // Prepare the data to be sent
+    const payload = {
+      citizenNumber: data.citizenNumber,
+      fullName: `${data.firstName} ${data.lastName}`,
+      email: data.email,
+      phone: data.phoneNumber,
+      password: data.password,
+      dateOfBirth: "",
+      gender: "",
+    };
 
+    try {
+      const res = await axios.post("http://localhost:8080/api/v1/register", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Check if registration is successful
+      if (res.status === 200) {
+        toast.success("Register successfully!");
+        
+        if (onSubmit) {
+          onSubmit(data);  
+        }
+
+        navigate("/login"); 
+      } else {
+        toast.error("Registration failed!");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("Register failed!");  
+    }
+  };
   return (
     <div className="container">
       <div className="d-flex justify-content-center align-items-center vh-100 ">
@@ -100,6 +139,38 @@ const Register = ({ onSubmit }) => {
               />
               {errors.email && (
                 <div className="error-message">{errors.email?.message}</div>
+              )}
+            </Form.Group>
+            {/* Phone Number */}
+            <Form.Group className="mb-3" controlId="formPhoneNumber">
+              <Form.Label className="fw-bold">Phone Number</Form.Label>
+              <Form.Control
+                className="fw-semibold"
+                style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
+                type="text"
+                placeholder="Enter your phone number"
+                {...register("phoneNumber")}
+              />
+              {errors.phoneNumber && (
+                <div className="error-message">
+                  {errors.phoneNumber?.message}
+                </div>
+              )}
+            </Form.Group>
+            {/* Citizen Number */}
+            <Form.Group className="mb-3" controlId="formCitizenNumber">
+              <Form.Label className="fw-bold">Citizen Number</Form.Label>
+              <Form.Control
+                className="fw-semibold"
+                style={{ fontSize: "0.8rem", backgroundColor: "#F5F5F5" }}
+                type="text"
+                placeholder="Enter your citizen number"
+                {...register("citizenNumber")}
+              />
+              {errors.citizenNumber && (
+                <div className="error-message">
+                  {errors.citizenNumber?.message}
+                </div>
               )}
             </Form.Group>
             {/* Password with visibility toggle */}
@@ -174,7 +245,6 @@ const Register = ({ onSubmit }) => {
             <Button
               style={{ backgroundColor: "#4A4A4A" }}
               type="submit"
-              onClick={onSubmit}
               className="w-100 fw-semibold"
             >
               Sign up
