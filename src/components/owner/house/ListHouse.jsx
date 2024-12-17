@@ -47,9 +47,9 @@ const ListHouse = () => {
   };
 
   const statusMapping = {
-    1: "Đã thuê",
-    2: "Còn trống",
-    3: "Đang bảo trì",
+    1: "Đang hoạt động",
+    2: "Đang sửa chữa",
+    3: "Ngừng hoạt động",
   };
 
   const handlePageClick = (event) => {
@@ -302,9 +302,9 @@ const ListHouse = () => {
             onChange={(e) => setSelectedStatus(e.target.value)}
           >
             <option value="">Chọn trạng thái</option>
-            <option value="1">Đã thuê</option>
-            <option value="2">Còn trống</option>
-            <option value="3">Đang bảo trì</option>
+            <option value="1">Đang hoạt động</option>
+            <option value="2">Đang sửa chữa</option>
+            <option value="3">Ngừng hoạt động</option>
             {/* Thêm các trạng thái khác nếu cần */}
           </Form.Select>
         </Col>
