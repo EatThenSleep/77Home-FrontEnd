@@ -8,14 +8,14 @@ export const getAllHouse = () => {
   return axios.post("/house");
 };
 
-export const getHouseDetail = (data) => {
-  return axios.post("/house", { ...data });
+export const getHouseDetail = (id) => {
+  return axios.get(`/house/${id}`);
 };
 
-export const updateHouse = (data) => {
-  return axios.post("/house", { ...data });
+export const updateHouse = (id, data) => {
+  return axios.put(`/house/${id}`, data);
 };
 
-export const deleteHouse = (data) => {
-  return axios.post("/house", { ...data });
+export const deleteHouse = (id) => {
+  return axios.delete(`/house/${id}`);
 };

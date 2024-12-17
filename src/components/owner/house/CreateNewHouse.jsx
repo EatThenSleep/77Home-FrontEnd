@@ -422,7 +422,7 @@ const CreateNewHouse = () => {
           <Button
             variant="secondary"
             className="mx-2"
-            onClick={() => navigate("/building")}
+            onClick={() => navigate("/house")}
           >
             Hủy
           </Button>
