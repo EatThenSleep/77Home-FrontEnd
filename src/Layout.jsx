@@ -24,7 +24,7 @@ const Layout = () => {
           <Route path="/house" element={<ManageHouse />}>
             <Route index element={<ListHouse />} />
             <Route path="create" element={<CreateNewHouse />} />
-            <Route path="update" element={<UpdateHouse />} />
+            <Route path="update/:id" element={<UpdateHouse />} />
             <Route path=":id" element={<DetailHouse />} />
           </Route>
           <Route path="/building" element={<ManageBuilding />}>
