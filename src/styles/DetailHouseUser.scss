@@ -1,0 +1,240 @@
+.detail-house-container .detail-house {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .detail-house-container .name {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  .detail-house-container .main-content{
+    margin-top: 20px;
+  }
+  .detail-house-container .images-section {
+    display: flex;
+    gap: 10px;
+    height: 500px;
+  }
+  
+  .detail-house-container .main-image {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  // .detail-house-container .thumbnails {
+  //   width: 30%;
+  //   display: flex;
+  //   flex-direction: column;
+  //   gap: 10px; 
+  // }
+  .roww {
+    display: flex;
+     /* Tạo khoảng cách đều giữa các phần tử */
+    gap: 100px; /* Khoảng cách giữa các phần tử */
+  }
+  
+  .roww li {
+    display: flex;
+    align-items: center; /* Căn giữa icon và nội dung */
+  }
+  
+  .roww i {
+    margin-right: 8px; /* Khoảng cách giữa icon và văn bản */
+  }
+
+  .rowww {
+    display: flex;
+     /* Tạo khoảng cách đều giữa các phần tử */
+    gap: 151px; /* Khoảng cách giữa các phần tử */
+  }
+  
+  .rowww li {
+    display: flex;
+    align-items: center; /* Căn giữa icon và nội dung */
+  }
+  
+  .rowww i {
+    margin-right: 8px; /* Khoảng cách giữa icon và văn bản */
+  }
+  .detail-house-container .thumbnail {
+    width: 100%;
+    height: calc((100% - 20px) / 3);
+    
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .detail-house-container .main-content { 
+    display: flex;
+    gap: 20px;
+  }
+  
+  .detail-house-container .left-section {
+    flex: 2; 
+  }
+  
+
+  .detail-house-container .info-section .a {
+    display: flex;
+    justify-content: space-between; /* Căn đều "Tổng quan" và buttons */
+    align-items: center;
+  }
+  
+  .detail-house-container .info-section h4 {
+    margin-bottom: 10px;
+  }
+  
+  .detail-house-container .info-section .price { 
+    margin-left: auto; 
+  }
+  .detail-house-container .info-section .buttons { /* CSS cho 2 button */
+    display: flex;
+    gap: 10px; 
+    margin-top: 10px; 
+      justify-content: center; /* Căn giữa các phần tử */
+      align-items: center;
+  }
+  
+  .detail-house-container .btn-gray { /* CSS cho button "View Owner" */
+    background-color: #ccc;
+    color: black;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .detail-house-container .btn-gray:hover { /* CSS cho button "View Owner" khi hover */
+    background-color: #0f90e0; /* Màu khi hover */
+    color: white; /* Thêm màu chữ khi hover nếu cần */
+  }
+  
+  .detail-house-container .btn-green { /* CSS cho button "Renter a house" */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+   
+  }
+  
+  .detail-house-container .house-info { /* CSS cho thông tin phòng */
+    display: flex;
+    align-items: center; /* Căn giữa icon và text */
+    margin-top: 10px; /* Khoảng cách với phần tử phía trên */
+  }
+  
+  .detail-house-container  .house-info i { /* CSS cho icon nhà */
+    margin-right: 5px; /* Khoảng cách với text */
+  }
+  .detail-house-container ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .detail-house-container ul li {
+    margin: 5px 0;
+  }
+  
+  .detail-house-container .booking-section {
+    flex: 1;
+    background: #fff;
+    padding: 20px;
+
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .detail-house-container .booking-section form label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .detail-house-container .booking-section form input,
+  .detail-house-container .booking-section form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: none; 
+    border-bottom: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .detail-house-container .booking-section form textarea {
+    resize: none;
+    height: 80px;
+  }
+  
+  .detail-house-container .btn {
+    background-color: #7650de;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  .detail-house-container .btn:hover {
+    background-color: #e815bd;
+  }
+
+  .detail-house-container .amenity-row {
+    display: flex;
+    flex-wrap: wrap; /* Đảm bảo hiển thị đẹp nếu nội dung dài */
+    gap: 10px; /* Khoảng cách giữa các cặp icon và chữ */
+    margin-bottom: 10px;
+    align-items: center; /* Căn giữa icon và text theo chiều dọc */
+  }
+  
+  .detail-house-container .amenity-item {
+    display: flex;
+    align-items: center; /* Căn giữa icon và text theo chiều dọc */
+    flex: 1 1 45%; /* Đảm bảo mỗi cặp icon và chữ chiếm khoảng 45% chiều rộng */
+  }
+  
+  .detail-house-container .amenity-row i {
+    margin-right: 8px;
+    font-size: 18px; /* Kích thước icon lớn hơn một chút */
+    width: 24px; /* Đảm bảo icon có kích thước cố định */
+    text-align: center; /* Căn giữa icon nếu cần */
+  }
+  
+  .detail-house-container .amenity-row span {
+    font-size: 16px; /* Tăng kích thước chữ một chút */
+  }
+
+  .detail-house-container .house-type {
+    padding: 4px 10px; /* Tăng một chút padding để chữ dễ đọc hơn */
+    border-radius: 50px;
+    font-weight: bold;
+    width: fit-content; /* Tự động co giãn theo nội dung */
+    text-align: center;
+    font-size: 0.9em;
+  }
+  
+  .detail-house-container .house-type.available {
+    border: 1px solid green;
+    background-color: #e1f7e1;
+    color: green;
+  }
+  
+  .detail-house-container .house-type.repairing {
+    border: 1px solid #ffcc00; /* Màu vàng ấm hơn thay vì vàng chói */
+    background-color: #f9f9d6; /* Màu nền nhẹ nhàng hơn, gần màu vàng nhạt */
+    color: #ffcc00;
+  }
+  
+  /* Trạng thái đã thuê */
+  .detail-house-container .house-type.inactive {
+    border: 1px solid lightcoral;
+    background-color: #f8d7da;
+    color: lightcoral;
+  }

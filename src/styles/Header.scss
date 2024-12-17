@@ -1,0 +1,96 @@
+.header {
+    background-color: #ffffff;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee; /* Thêm đường viền dưới */
+  }
+  
+  header .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex; /* Sử dụng flexbox để căn chỉnh */
+    justify-content: space-between; /* Căn đều 2 bên */
+    align-items: center; /* Căn giữa theo chiều dọc */
+  }
+  
+  header .logo {
+    width: 60px; /* Tăng kích thước logo */
+    height: auto; /* Giữ tỉ lệ logo */
+  }
+  header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex; /* Hiển thị các mục menu theo hàng ngang */
+  }
+  
+  header nav li {
+    margin-left: 30px;
+    position: relative; /* Để định vị dropdown menu */
+  }
+  
+  header .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1; /* Đảm bảo menu hiển thị trên các phần tử khác */
+  }
+  
+  header .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+  
+  header .header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  header .header-right > div {
+    margin-left: 20px;
+  }
+  
+  header .avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+
+/* Sử dụng Flexbox để căn chỉnh logo và chữ */
+header .header-left {
+    display: flex;               /* Sử dụng flexbox để căn chỉnh các phần tử theo chiều ngang */
+    align-items: center;         /* Căn chỉnh các phần tử theo chiều dọc */
+  }
+  
+
+
+/* Chữ 77Home với hiệu ứng cầu vồng */
+header .logo-text {
+  font-size: 40px;             /* Kích thước chữ */
+  font-weight: bold;           /* Làm chữ đậm */
+  margin-left: 10px;           /* Khoảng cách giữa logo và chữ */
+  display: inline-block;       /* Đảm bảo chữ được căn chỉnh đúng */
+  line-height: 50px;           /* Căn chỉnh chữ theo chiều dọc giống với logo */
+  font-family: 'Poppins', sans-serif; /* Font chữ nghệ thuật */
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red); /* Màu cầu vồng */
+  -webkit-background-clip: text; /* Chỉ áp dụng màu cho chữ */
+  color: transparent;           /* Ẩn màu chữ để màu nền hiển thị */
+  background-size: 300%;        /* Tăng kích thước gradient để nó có thể di chuyển */
+  animation: rainbow 3s linear infinite; /* Áp dụng animation cho màu cầu vồng */
+}
+
+/* Hiệu ứng hover */
+header .logo-text:hover {
+  transform: scale(1.1); /* Phóng to chữ khi hover */
+}
+
+/* Tạo hiệu ứng màu cầu vồng chuyển động */
+@keyframes rainbow {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: -100%; /* Thay đổi vị trí để gradient di chuyển từ phải sang trái */
+  }
+}
