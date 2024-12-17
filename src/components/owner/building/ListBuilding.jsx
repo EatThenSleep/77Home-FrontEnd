@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteBuilding from "./DeleteBuilding";
 import { getAllWard } from "../../../service/wardService";
 import { getAllBuilding } from "../../../service/buildingService";
+import "../../../styles/Building.scss";
 const ListBuilding = () => {
   const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
@@ -275,7 +276,7 @@ const ListBuilding = () => {
       </Row>
 
       {/* Danh sách nhà trọ */}
-      <Row className="mt-5">
+      <Row className="mt-5 custom-row-height">
         {currentItems && currentItems.length > 0 ? (
           currentItems.map((building) => (
             <Col md={12} key={building.id} className="mb-3">
@@ -328,7 +329,7 @@ const ListBuilding = () => {
             </Col>
           ))
         ) : (
-          <div className="text-center fs-5  fw-bold">
+          <div className="text-center fs-5 fw-bold">
             Không có nhà trọ phù hợp!
           </div>
         )}
