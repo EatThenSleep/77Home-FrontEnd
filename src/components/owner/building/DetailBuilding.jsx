@@ -1,4 +1,4 @@
-import { Container, Row, Col, Button, ListGroup, Card } from "react-bootstrap";
+import { Row, Col, Button, Container } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaImage } from "react-icons/fa6";
@@ -17,6 +17,7 @@ const DetailBuilding = () => {
   const fetchBuildingById = async () => {
     try {
       const res = await getBuildingDetail(id);
+      console.log("data", res.DT);
       if (res && res.DT) {
         setDetailBuilding(res.DT);
       }
@@ -38,7 +39,6 @@ const DetailBuilding = () => {
   return (
     <Container className="p-4">
       <Row className="p-3 mb-5 bg-white rounded shadow-sm">
-        {/* Hình ảnh */}
         <Col
           md={6}
           className="d-flex justify-content-center align-items-center mb-4 mb-md-0"
@@ -47,65 +47,74 @@ const DetailBuilding = () => {
             <img
               src={detailBuilding.avatar}
               className="image-house-detail img-fluid rounded"
-              alt="Building avatar"
+              alt={`Hình ảnh của ${detailBuilding.name}`}
             />
           ) : (
-            <FaImage className="image-building-detail" size={200} />
+            <FaImage className="image-house-detail" size={200} />
           )}
         </Col>
-
-        {/* Chi tiết nhà */}
         <Col md={6}>
           <h3 className="mb-4">{detailBuilding.name || "Chưa cập nhật"}</h3>
-
           <Row>
+            {" "}
+            {/* Sử dụng Row để sắp xếp thông tin */}
             <Col xs={6} className="mb-2">
-              <strong>Địa chỉ:</strong> {detailBuilding.address || "N/A"}
+              <strong>Địa chỉ:</strong> {detailBuilding.address || "N/A"},
+              <span> phường {detailBuilding?.ward?.name || "N/A"}</span>{" "}
+              {/* Hiển thị tên phường */}
+            </Col>
+            <Col xs={6} className="mb-2">
+              <strong>Diện tích:</strong> {detailBuilding.area || "N/A"} m²
+            </Col>
+            <Col xs={6} className="mb-2">
+              <strong>Số tầng:</strong> {detailBuilding.numberOfFloors || "N/A"}
+            </Col>
+            <Col xs={6} className="mb-2">
+              <strong>Năm xây dựng:</strong> {detailBuilding.yearBuilt || "N/A"}
+            </Col>
+            <Col xs={6} className="mb-2">
+              <strong>Kinh độ:</strong> {detailBuilding.longitude || "N/A"}
+            </Col>
+            <Col xs={6} className="mb-2">
+              <strong>Vĩ độ:</strong> {detailBuilding.latitude || "N/A"}
             </Col>
             <Col xs={6} className="mb-2">
               <strong>Khu vực:</strong>{" "}
-              {regionMapping[detailBuilding.region] || "Không có dữ liệu"}
+              {regionMapping[detailBuilding.region] || "N/A"}
             </Col>
-            <Col xs={6} className="mb-2">
-              <strong>Diện tích:</strong>{" "}
-              {detailBuilding.area || "Không có dữ liệu"} m<sup>2</sup>
-            </Col>
-            <Col xs={6} className="mb-2">
-              <strong>Số tầng:</strong>{" "}
-              {detailBuilding.numberOfFloors || "Không có dữ liệu"}
-            </Col>
-            <Col xs={6} className="mb-2">
-              <strong>Năm xây dựng:</strong>{" "}
-              {detailBuilding.yearBuilt || "Không có dữ liệu"}
-            </Col>
-            <Col xs={6} className="mb-2">
+            <Col xs={12} className="mb-2">
               <strong>Mô tả:</strong>{" "}
-              {detailBuilding.description || "Không có mô tả"}
+              {detailBuilding.description || "Chưa có mô tả"}
             </Col>
-            <Col xs={6} className="mb-2">
-              <strong>Tọa độ:</strong> Kinh độ:
-              {detailBuilding.longitude || "Không có dữ liệu"}, Vĩ độ:
-              {detailBuilding.latitude || "Không có dữ liệu"}
-            </Col>
-            <Col xs={6} className="mb-2">
-              <strong>Người đại diện:</strong>{" "}
-              {detailBuilding.ownerRepresent || "Không có dữ liệu"}
-            </Col>
-            <Col xs={6} className="mb-2">
+            <Col xs={6} className="mb-3">
               <strong>Trạng thái:</strong>{" "}
-              {statusMapping[detailBuilding.status] || "Không có dữ liệu"}
+              {statusMapping[detailBuilding.status] || "N/A"}
             </Col>
             <Col xs={6} className="mb-2">
               <strong>Người tạo:</strong>{" "}
               {detailBuilding?.createdBy_user?.fullName || "Không có dữ liệu"}
             </Col>
+            <Col>
+              <div>
+                <strong>Thông tin liên lạc:</strong>
+                <p className="mb-1">
+                  <strong> Tên chủ trọ</strong>:{" "}
+                  {detailBuilding.ownerRepresent || "Không có dữ liệu"}
+                </p>
+                <p>
+                  <strong>Email</strong>:{" "}
+                  {detailBuilding.owner?.email || "Chưa có dữ liệu"}
+                </p>
+              </div>
+            </Col>
           </Row>
-
-          {/* Nút Chỉnh sửa */}
           <Button
             variant="warning"
-            className="mt-2"
-            onClick={() => navigate("/house/update", { state: detailBuilding })}
+            onClick={() =>
+              navigate(`/building/update/${detailBuilding.id}`, {
+                state: detailBuilding,
+              })
+            }
           >
             Chỉnh sửa
           </Button>

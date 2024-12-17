@@ -80,7 +80,7 @@ const UpdateBuilding = () => {
       if (buildingDetails) {
         setValue("name", buildingDetails.name);
         setValue("description", buildingDetails.description);
-        setValue("ward_id", buildingDetails.ward_id);
+        setValue("ward_id", buildingDetails.ward.id);
         setValue("address", buildingDetails.address);
         setValue("yearBuilt", buildingDetails.yearBuilt);
         setValue("numberOfFloors", buildingDetails.numberOfFloors);
@@ -90,7 +90,7 @@ const UpdateBuilding = () => {
         setValue("status", buildingDetails.status);
         setValue("region", buildingDetails.region);
         setValue("ownerRepresent", buildingDetails.ownerRepresent);
-        setValue("createdBy", buildingDetails.createdBy);
+        setValue("createdBy", buildingDetails.createdBy_user.citizenNumber);
         setValue("avatar", buildingDetails.avatar);
         setAvatarPreview(buildingDetails.avatar);
       }
