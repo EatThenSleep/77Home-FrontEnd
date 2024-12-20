@@ -1,0 +1,40 @@
+.detail-room-container {
+    width: 550px;
+    .room-title {
+      font-size: 2rem; // Kích thước tiêu đề lớn hơn
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  
+    .room-info {
+      font-size: 1.4rem; // Kích thước thông tin phòng
+      line-height: 1.8; // Khoảng cách giữa các dòng
+    }
+  
+    h1, h2 {
+      font-size: 2.5rem; // Tăng kích thước tiêu đề chính
+      margin-bottom: 20px;
+    }
+
+    .btn-btn-back, .btn-edit-room {
+     margin-left: 2px;
+      border-radius: 8px; // Tạo góc bo tròn đẹp hơn
+    }
+  
+    .btn-edit-room {
+      background-color: #ffc107; // Màu warning
+      color: #212529; // Màu chữ đen
+      border: none;
+  
+      &:hover {
+        background-color: #e0a800; // Màu khi hover
+      }
+    }
+  
+    .card {
+      padding: 30px; // Tăng khoảng cách bên trong card
+      font-size: 1.1rem; // Tăng kích thước chữ trong card
+    }
+  }
+  
