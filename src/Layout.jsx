@@ -17,6 +17,11 @@ import UpdateBuilding from "./components/owner/building/UpdateBuilding";
 import ManageHouseUser from "./components/user/house/ManageHouseUser";
 import ListHouseUser from "./components/user/house/ListHouseUser";
 import DetailHouseUser from "./components/user/house/DetailHouseUser";
+import ManageRoom from "./components/owner/room/ManageRoom";
+import ListRoom from "./components/owner/room/ListRoom";
+import CreateNewRoom from "./components/owner/room/CreateNewRoom";
+import DetailRoom from "./components/owner/room/DetailRoom";
+import UpdatedRoom from "./components/owner/room/UpdateRoom";
 
 const Layout = () => {
   return (
@@ -36,9 +41,18 @@ const Layout = () => {
             <Route path="update/:id" element={<UpdateBuilding />} />
             <Route path=":id" element={<DetailBuilding />} />
           </Route>
+
+          <Route path="/room" element={<ManageRoom />}>
+            <Route index element={<ListRoom/>} />
+            <Route path="create" element={<CreateNewRoom/>} />
+            <Route path=":id" element={<DetailRoom />} />
+            <Route path="update/:id" element={<UpdatedRoom />} />
+          </Route>
+
           <Route path="/user/house" element={<ManageHouseUser />}>
             <Route index element={<ListHouseUser/>} />
             <Route path=":id" element={<DetailHouseUser/>} />
+            
           </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
