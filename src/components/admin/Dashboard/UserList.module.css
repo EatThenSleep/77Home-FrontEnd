@@ -6,21 +6,10 @@
 }
 
 /* Sidebar styling */
-.sidebar {
-  width: 400px;
-  min-width: 400px;
-  background: #2c3e50;
-  min-height: 100vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-}
 
 /* Main content area */
 .main-content {
   flex: 1;
-
   padding: 24px;
   background-color: #f8f9fa;
   min-height: 100vh;
