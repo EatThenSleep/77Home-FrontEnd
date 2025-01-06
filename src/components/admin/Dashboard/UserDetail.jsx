@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Card,
   Container,
@@ -13,6 +13,7 @@ import { getUserById } from "../../../service/userService";
 
 const UserDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,12 +70,16 @@ const UserDetail = () => {
     return value;
   };
 
+  const handleEditClick = () => {
+    navigate(`/admin/users/${id}/update`, { state: { user } });
+  };
+
   return (
     <Container className="py-4">
       <Card>
         <Card.Header className="d-flex justify-content-between align-items-center">
           <h4>Thông tin chi tiết</h4>
-          <Button size="sm" variant="primary">
+          <Button size="sm" variant="primary" onClick={handleEditClick}>
             Edit
           </Button>
         </Card.Header>
