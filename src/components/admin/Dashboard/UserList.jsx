@@ -12,15 +12,18 @@ import {
 import { getAllUsers } from "../../../service/userService";
 import styles from "./UserList.module.css";
 import { useNavigate } from "react-router-dom";
+import DeleteUser from "./DeleteUser";
+
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  // Thêm state cho search và pagination
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [usersPerPage] = useState(5);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -31,14 +34,12 @@ const UserList = () => {
       const response = await getAllUsers();
       setUsers(response.DT);
       setLoading(false);
-      // eslint-disable-next-line no-unused-vars
     } catch (err) {
       setError("Error fetching users");
       setLoading(false);
     }
   };
 
-  // Xử lý tìm kiếm
   const filteredUsers = users.filter(
     (user) =>
       user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -46,18 +47,14 @@ const UserList = () => {
       user.citizenNumber?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Tính toán phân trang
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
 
-  // Tính tổng số trang
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
-  // Xử lý chuyển trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Component phân trang
   const renderPagination = () => {
     if (totalPages <= 1) return null;
 
@@ -72,7 +69,6 @@ const UserList = () => {
 
         {Array.from({ length: totalPages }).map((_, index) => {
           const pageNumber = index + 1;
-          // Chỉ hiển thị trang hiện tại và trang kế tiếp
           if (pageNumber === currentPage || pageNumber === currentPage + 1) {
             return (
               <Pagination.Item
@@ -97,6 +93,15 @@ const UserList = () => {
     );
   };
 
+  const handleDeleteUser = (user) => {
+    setUserToDelete(user);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteSuccess = (userId) => {
+    setUsers(users.filter((user) => user.citizenNumber !== userId));
+  };
+
   if (loading) {
     return (
       <div
@@ -116,7 +121,6 @@ const UserList = () => {
     <div className={`${styles["d-flex"]} m-2`}>
       <div className={styles["main-content"]}>
         <Container fluid>
-          {/* Search Bar */}
           <Card className="mb-4">
             <Card.Body>
               <Form>
@@ -135,13 +139,9 @@ const UserList = () => {
             </Card.Body>
           </Card>
 
-          {/* Users Table */}
           <Card className={styles.card}>
             <Card.Header className={styles["card-header"]}>
               <h5 className="mb-0">Danh sách người dùng</h5>
-              <Button variant="primary" size="sm">
-                Thêm người dùng
-              </Button>
             </Card.Header>
             <Card.Body className={styles["card-body"]}>
               <Table responsive hover className={styles.table}>
@@ -190,6 +190,7 @@ const UserList = () => {
                           size="sm"
                           variant="danger"
                           className={styles["btn-sm"]}
+                          onClick={() => handleDeleteUser(user)}
                         >
                           Delete
                         </Button>
@@ -198,12 +199,21 @@ const UserList = () => {
                   ))}
                 </tbody>
               </Table>
-              {/* Pagination */}
               {renderPagination()}
             </Card.Body>
           </Card>
         </Container>
       </div>
+
+      {/* Modal Xác Nhận Xóa */}
+      {userToDelete && (
+        <DeleteUser
+          show={showDeleteModal}
+          handleClose={() => setShowDeleteModal(false)}
+          userData={userToDelete}
+          fetchAllListUser={fetchUsers}
+        />
+      )}
     </div>
   );
 };
