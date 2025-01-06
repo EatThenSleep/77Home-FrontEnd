@@ -22,10 +22,11 @@ import ListRoom from "./components/owner/room/ListRoom";
 import CreateNewRoom from "./components/owner/room/CreateNewRoom";
 import DetailRoom from "./components/owner/room/DetailRoom";
 import UpdatedRoom from "./components/owner/room/UpdateRoom";
-import Dashboard from "./components/admin/Dashboard/DashBoard";
 import AdminLayout from "./components/admin/AdminLayout";
 import UserDetail from "./components/admin/Dashboard/UserDetail";
 import UserList from "./components/admin/Dashboard/UserList";
+import Dashboard from "./components/admin/Dashboard/Dashboard";
+import UpdateUser from "./components/admin/Dashboard/UpdateUser";
 const Layout = () => {
   return (
     <div>
@@ -63,6 +64,7 @@ const Layout = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="users" element={<UserList />} />
             <Route path="users/:id" element={<UserDetail />} />
+            <Route path="users/:id/update" element={<UpdateUser />} />
           </Route>
         </Routes>
         <ToastContainer
