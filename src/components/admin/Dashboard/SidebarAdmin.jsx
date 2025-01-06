@@ -7,33 +7,34 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import "./SidebarAdmin.module.css";
+import styles from "./SidebarAdmin.module.css";
+import { Link } from "react-router-dom";
 
 const SidebarAdmin = () => {
   return (
-    <div className="sidebar bg-dark text-white">
-      <div className="sidebar-header p-3 mb-3 border-bottom">
+    <div className={styles.sidebar}>
+      <div className={styles.sidebarHeader}>
         <h3 className="text-center">Admin Panel</h3>
       </div>
-      <Nav className="flex-column">
-        <Nav.Link href="/admin/dashboard" className="text-white">
-          <FaHome className="me-2" /> Dashboard
-        </Nav.Link>
-        <Nav.Link href="/admin/users" className="text-white">
-          <FaUsers className="me-2" /> Users
-        </Nav.Link>
-        <Nav.Link href="/products" className="text-white">
-          <FaShoppingCart className="me-2" /> Products
-        </Nav.Link>
-        <Nav.Link href="/orders" className="text-white">
-          <FaClipboardList className="me-2" /> Orders
-        </Nav.Link>
-        <Nav.Link href="/settings" className="text-white">
-          <FaCog className="me-2" /> Settings
-        </Nav.Link>
-        <Nav.Link href="/logout" className="text-white mt-auto">
-          <FaSignOutAlt className="me-2" /> Logout
-        </Nav.Link>
+      <Nav className="flex-column h-100">
+        <Link to="/admin/dashboard" className={styles.navLink}>
+          <FaHome /> Dashboard
+        </Link>
+        <Link to="/admin/users" className={styles.navLink}>
+          <FaUsers /> Users
+        </Link>
+        <Link to="/products" className={styles.navLink}>
+          <FaShoppingCart /> Products
+        </Link>
+        <Link to="/orders" className={styles.navLink}>
+          <FaClipboardList /> Orders
+        </Link>
+        <Link to="/settings" className={styles.navLink}>
+          <FaCog /> Settings
+        </Link>
+        <Link to="/logout" className={`${styles.navLink} ${styles.logoutLink}`}>
+          <FaSignOutAlt /> Logout
+        </Link>
       </Nav>
     </div>
   );
