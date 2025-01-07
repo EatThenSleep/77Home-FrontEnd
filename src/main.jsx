@@ -4,12 +4,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter } from "react-router-dom";
-import Layout from "./Layout.jsx";
+import AppRoutes from "./components/routes/AppRoutes";
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
 
   // </StrictMode>
   <BrowserRouter>
-    <Layout />
+    <AppRoutes/>
   </BrowserRouter>
 );

@@ -6,8 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import "../../styles/Register.scss";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { registerUser } from "../../service/authService";
 
 const schema = yup.object({
   firstName: yup.string().required("Bắt buộc nhập"),
@@ -33,7 +33,7 @@ const schema = yup.object({
 });
 
 // eslint-disable-next-line react/prop-types
-const Register = ({ onSubmit }) => {
+const Register = () => {
   const navigate = useNavigate();
   const {
     register,
@@ -50,38 +50,26 @@ const Register = ({ onSubmit }) => {
 
   const handleFormSubmit = async (data) => {
     // Prepare the data to be sent
-    const payload = {
+    const authData = {
       citizenNumber: data.citizenNumber,
       fullName: `${data.firstName} ${data.lastName}`,
       email: data.email,
       phone: data.phoneNumber,
       password: data.password,
-      dateOfBirth: "",
-      gender: "",
     };
 
     try {
-      const res = await axios.post("http://localhost:8080/api/v1/register", payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      // Check if registration is successful
-      if (res.status === 200) {
-        toast.success("Register successfully!");
-        
-        if (onSubmit) {
-          onSubmit(data);  
-        }
-
-        navigate("/login"); 
+      let res = await registerUser(authData);
+      if (res && res.EC === 0) {
+        toast.success(res.EM);
+        navigate("/login");
       } else {
-        toast.error("Registration failed!");
+        toast.error(res.EM);
       }
+      // Check if registration is successful
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Register failed!");  
+      toast.error("Register failed!");
     }
   };
   return (

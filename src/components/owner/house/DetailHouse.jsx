@@ -64,7 +64,8 @@ const DetailHouse = () => {
               <Col md={6}>
                 <ListGroup variant="flush">
                   <ListGroup.Item>
-                    <strong>Tên:</strong> {detailHouse.name || "Không có dữ liệu"}
+                    <strong>Tên:</strong>{" "}
+                    {detailHouse.name || "Không có dữ liệu"}
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <strong>Địa chỉ:</strong> {detailHouse.address},
@@ -131,11 +132,10 @@ const DetailHouse = () => {
             </Row>
             {/* Buttons */}
             <div className="mt-4 mx-2">
-              
               <Button
                 variant="warning"
                 onClick={() =>
-                  navigate(`/house/update/${detailHouse.id}`, {
+                  navigate(`/owner/house/update/${detailHouse.id}`, {
                     state: detailHouse,
                   })
                 }
@@ -148,7 +148,6 @@ const DetailHouse = () => {
       </Row>
     </Card>
   );
-  
 };
 
 export default DetailHouse;

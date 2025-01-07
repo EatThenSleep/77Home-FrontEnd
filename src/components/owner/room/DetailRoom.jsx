@@ -1,92 +1,140 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"; // Lấy ID từ URL
-import { Container, Card, Button, Spinner } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  Container,
+  Card,
+  Button,
+  Spinner,
+  Row,
+  Col,
+  Badge,
+} from "react-bootstrap";
 import axios from "axios";
 import "../../../styles/DetailRoom.scss";
-import { useNavigate } from "react-router-dom";
+
 const DetailRoom = () => {
-    const { id } = useParams(); // Lấy ID từ URL
-    const [room, setRoom] = useState(null); // Dữ liệu phòng
-    const [loading, setLoading] = useState(true); // Trạng thái loading
-    const [error, setError] = useState(null); // Trạng thái lỗi
-    const navigate = useNavigate();
-    // Lấy dữ liệu từ API
-    const fetchRoomDetails = async () => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/v1/room/${id}`);
-            setRoom(response.data.DT); // Lưu dữ liệu vào state
-        } catch (err) {
-            setError("Không thể tải thông tin phòng. Vui lòng thử lại!"); // Xử lý lỗi
-        } finally {
-            setLoading(false); // Kết thúc trạng thái loading
-        }
-    };
+  const { id } = useParams();
+  const [room, setRoom] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        fetchRoomDetails();
-    }, [id]);
-
-    // Hiển thị trạng thái
-    const statusMapping = {
-        0: "Còn trống",
-        1: "Đã thuê",
-        2: "Bảo trì",
-    };
-
-    // Render khi đang tải
-    if (loading) {
-        return (
-            <Container className="text-center mt-5">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>
-            </Container>
-        );
+  const fetchRoomDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/v1/room/${id}`
+      );
+      setRoom(response.data.DT);
+    } catch (err) {
+      setError("Không thể tải thông tin phòng. Vui lòng thử lại!");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Render khi có lỗi
-    if (error) {
-        return (
-            <Container className="text-center mt-5 text-danger">
-                <h4>{error}</h4>
-            </Container>
-        );
-    }
+  useEffect(() => {
+    fetchRoomDetails();
+  }, [id]);
 
-    // Render chi tiết phòng
+  const statusMapping = {
+    0: { text: "Còn trống", variant: "success" },
+    1: { text: "Đã thuê", variant: "danger" },
+    2: { text: "Bảo trì", variant: "warning" },
+  };
+
+  if (loading) {
     return (
-        <Container className="detail-room-container mt-5"  style={{marginTop : "300px"}}>
-            <Card className="p-4 shadow">
-                <Card.Body>
-                    <Card.Title className="text-center mb-4">
-                        <h2>{room.name}</h2>
-                    </Card.Title>
-                    <Card.Text>
-                        <b>Diện tích:</b> {room.area} m² <br />
-                        <b>Số người tối đa:</b> {room.maxOccupants} <br />
-                        <b>Giá thuê:</b> {room.monthlyRent.toLocaleString()} VND / tháng <br />
-                        <b>Trạng thái:</b> {statusMapping[room.status]} <br />
-                        <b>Mô tả:</b> {room.description} <br />
-                        <b>Nhà:</b> {room.house.name} <br />
-                    </Card.Text>
-                    <div className="text-center mt-4">
-                        <Button variant="secondary" className="btn-back" onClick={() => navigate(`/room`)}>
-                            Quay lại
-                        </Button>
-                        <Button
-                            variant="warning"
-                            className="btn-edit-room"
-                            onClick={() =>
-                                navigate(`/room/update/${room.id}`, { state: room })
-                            }
-                        >
-                            Chỉnh sửa
-                        </Button>
-                    </div>
-                </Card.Body>
-            </Card>
-        </Container>
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
     );
+  }
+
+  if (error) {
+    return (
+      <Container className="text-center mt-5">
+        <div className="alert alert-danger">{error}</div>
+      </Container>
+    );
+  }
+
+  return (
+    <Container className="detail-room-container py-5">
+      <Row>
+        <Col lg={8}>
+          <div className="room-images mb-4">
+            <div className="main-image">
+              <img
+                src={room.avatar || "https://via.placeholder.com/800x500"}
+                alt={room.name}
+                className="img-fluid rounded shadow"
+              />
+            </div>
+          </div>
+        </Col>
+        <Col lg={4}>
+          <Card className="room-info-card border-0 shadow-sm">
+            <Card.Body>
+              <h2 className="room-title mb-4">{room.name}</h2>
+              <Badge
+                bg={statusMapping[room.status].variant}
+                className="mb-3 px-3 py-2"
+              >
+                {statusMapping[room.status].text}
+              </Badge>
+
+              <div className="price-tag my-4">
+                <h3 className="text-primary mb-0">
+                  {room.monthlyRent.toLocaleString()} VND
+                  <small className="text-muted">/tháng</small>
+                </h3>
+              </div>
+
+              <div className="room-details">
+                <div className="detail-item">
+                  <i className="fas fa-vector-square"></i>
+                  <span>Diện tích: {room.area} m²</span>
+                </div>
+                <div className="detail-item">
+                  <i className="fas fa-users"></i>
+                  <span>Số người tối đa: {room.maxOccupants}</span>
+                </div>
+                <div className="detail-item">
+                  <i className="fas fa-home"></i>
+                  <span>Thuộc: {room.house.name}</span>
+                </div>
+              </div>
+
+              <div className="description mt-4">
+                <h5>Mô tả</h5>
+                <p>{room.description}</p>
+              </div>
+
+              <div className="action-buttons mt-4">
+                <Button
+                  variant="outline-secondary"
+                  className="me-3"
+                  onClick={() => navigate("/owner/room")}
+                >
+                  <i className="fas fa-arrow-left me-2"></i>
+                  Quay lại
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() =>
+                    navigate(`/owner/room/update/${room.id}`, { state: room })
+                  }
+                >
+                  <i className="fas fa-edit me-2"></i>
+                  Chỉnh sửa
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
 };
 
 export default DetailRoom;
