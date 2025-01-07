@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
-import { Form, Row, Col, Container, InputGroup, Button } from "react-bootstrap";
+import { Form, Row, Col, Container, Button, Card } from "react-bootstrap";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import "../../../styles/CreateNewRoom.scss";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { createNewRoom } from "../../../service/roomService";
+import "../../../styles/CreateNewRoom.scss";
 const CreateNewRoom = () => {
   const navigate = useNavigate();
-  const [houses, setHouses] = useState([]); // Danh sách nhà
+  const [houses, setHouses] = useState([]);
+  const [avatarPreview, setAvatarPreview] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
-  // Schema xác thực
   const schema = yup.object().shape({
     name: yup.string().required("Tên phòng không được để trống"),
     area: yup
@@ -43,8 +45,6 @@ const CreateNewRoom = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
-  // Hàm lấy danh sách nhà
   const fetchHouses = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/house");
@@ -53,126 +53,209 @@ const CreateNewRoom = () => {
       console.error("Lỗi khi lấy danh sách nhà:", error);
     }
   };
-
   useEffect(() => {
-    fetchHouses(); // Lấy danh sách nhà khi component mount
+    fetchHouses();
   }, []);
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0]; // Lấy file đầu tiên
+    if (!file) return;
 
-  // Hàm xử lý gửi dữ liệu
-  const onSubmit = async (data) => {
     try {
-      await axios.post("http://localhost:8080/api/v1/room", data);
-      toast.success("Thêm phòng mới thành công!");
-      reset(); // Reset form
-      navigate("/room"); // Điều hướng về trang danh sách phòng
+      // Hiển thị ảnh preview
+      setAvatarPreview(URL.createObjectURL(file));
+
+      // Upload ảnh lên Cloudinary
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "ssga5jml");
+      formData.append("api_key", "963862276821583");
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dbnofh9a8/image/upload`,
+        formData
+      );
+      setPreviewUrls(response.data.secure_url); // Chỉ lưu một URL
     } catch (error) {
-      console.error("Lỗi khi thêm phòng:", error);
-      toast.error("Thêm phòng thất bại!");
+      console.error("Upload ảnh thất bại:", error);
+      toast.error("Không thể tải ảnh lên. Vui lòng thử lại.");
+    }
+  };
+  const onSubmit = async (data) => {
+    console.log("Form Data:", data);
+    console.log("Image URL:", previewUrls);
+
+    try {
+      const roomData = {
+        ...data,
+        avatar: previewUrls,
+      };
+      const response = await createNewRoom(roomData);
+
+      if (response && response.EC === 0) {
+        toast.success("Thêm phòng mới thành công!");
+        setAvatarPreview(null);
+        setPreviewUrls("");
+        reset();
+        navigate("/owner/room");
+      } else {
+        toast.error("Thêm phòng thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi gửi dữ liệu:", error);
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
 
   return (
-    <Container className="create-new-room-container mt-4"  style={{}}>
-      <h2 className="text-center mb-4">Thêm phòng mới</h2>
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group controlId="name">
-              <Form.Label>Tên phòng</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Nhập tên phòng"
-                {...register("name")}
-              />
-              <p className="text-danger">{errors.name?.message}</p>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="area">
-              <Form.Label>Diện tích</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Nhập diện tích (m²)"
-                {...register("area")}
-              />
-              <p className="text-danger">{errors.area?.message}</p>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group controlId="maxOccupants">
-              <Form.Label>Số người tối đa</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Nhập số người tối đa"
-                {...register("maxOccupants")}
-              />
-              <p className="text-danger">{errors.maxOccupants?.message}</p>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="monthlyRent">
-              <Form.Label>Giá thuê</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Nhập giá thuê (VND)"
-                {...register("monthlyRent")}
-              />
-              <p className="text-danger">{errors.monthlyRent?.message}</p>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={12}>
-            <Form.Group controlId="description">
+    <Container className="create-new-room-container py-5">
+      <Card className="shadow-lg">
+        <Card.Body>
+          <h2 className="text-center mb-4">Thêm Phòng Mới</h2>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Row>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Tên phòng</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Nhập tên phòng"
+                    {...register("name")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">{errors.name?.message}</p>
+                </Form.Group>
+              </Col>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Diện tích (m²)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Nhập diện tích"
+                    {...register("area")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">{errors.area?.message}</p>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Số người tối đa</Form.Label>
+                  <Form.Control
+                    type="number"
+                    {...register("maxOccupants")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">
+                    {errors.maxOccupants?.message}
+                  </p>
+                </Form.Group>
+              </Col>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Giá thuê (VNĐ)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    {...register("monthlyRent")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">
+                    {errors.monthlyRent?.message}
+                  </p>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group className="mb-3">
               <Form.Label>Mô tả</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                placeholder="Nhập mô tả"
                 {...register("description")}
+                className="rounded"
               />
-              <p className="text-danger">{errors.description?.message}</p>
+              <p className="text-danger small">{errors.description?.message}</p>
             </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group controlId="status">
-              <Form.Label>Trạng thái</Form.Label>
-              <Form.Control as="select" {...register("status")}>
-                <option value="">Chọn trạng thái</option>
-                <option value="0">Còn trống</option>
-                <option value="1">Đã thuê</option>
-                <option value="2">Bảo trì</option>
-              </Form.Control>
-              <p className="text-danger">{errors.status?.message}</p>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="house_id">
-              <Form.Label>Nhà</Form.Label>
-              <Form.Control as="select" {...register("house_id")}>
-                <option value="">Chọn nhà</option>
-                {houses.map((house) => (
-                  <option key={house.id} value={house.id}>
-                    {house.name}
-                  </option>
-                ))}
-              </Form.Control>
-              <p className="text-danger">{errors.house_id?.message}</p>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col md={12} className="text-center">
-            <Button variant="primary" type="submit" className="px-5">
-              Thêm phòng
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+
+            <Row>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Trạng thái</Form.Label>
+                  <Form.Select {...register("status")} className="rounded-pill">
+                    <option value="">Chọn trạng thái</option>
+                    <option value="0">Còn trống</option>
+                    <option value="1">Đã thuê</option>
+                    <option value="2">Bảo trì</option>
+                  </Form.Select>
+                  <p className="text-danger small">{errors.status?.message}</p>
+                </Form.Group>
+              </Col>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nhà</Form.Label>
+                  <Form.Select
+                    {...register("house_id")}
+                    className="rounded-pill"
+                  >
+                    <option value="">Chọn nhà</option>
+                    {houses.map((house) => (
+                      <option key={house.id} value={house.id}>
+                        {house.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <p className="text-danger small">
+                    {errors.house_id?.message}
+                  </p>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <div className="mb-4">
+              <p className="mb-2">Hình ảnh phòng</p>
+              <div className="image-upload-container">
+                <label className="upload-label">
+                  <FaCloudUploadAlt size={30} />
+                  <span>Tải lên hình ảnh</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                  />
+                </label>
+                <div className="image-preview-container">
+                  {avatarPreview && (
+                    <div className="preview-image-wrapper">
+                      <img src={avatarPreview} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Button
+                variant="secondary"
+                className="btn-submit px-5  rounded-pill mx-2"
+                onClick={() => navigate("/owner/room")}
+              >
+                Hủy
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                className="btn-submit px-5 rounded-pill"
+              >
+                Thêm
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
     </Container>
   );
 };

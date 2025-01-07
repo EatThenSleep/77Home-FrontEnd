@@ -97,12 +97,12 @@ const UpdateHouse = () => {
         setValue("position", houseDetails.position);
         setValue("ward_id", houseDetails.ward_id);
         setValue("owner_id", houseDetails.owner_id);
-        
+
         setAvatarPreview(houseDetails.avatar);
       }
     };
     fetchData();
-    console.log(houseDetails)
+    console.log(houseDetails);
   }, [houseDetails, setValue]);
 
   useEffect(() => {
@@ -147,8 +147,6 @@ const UpdateHouse = () => {
   };
 
   const onSubmit = async (data) => {
-   
-
     try {
       const response = await updateHouse(id, {
         name: data.name,
@@ -165,22 +163,20 @@ const UpdateHouse = () => {
         region: data.region,
         position: data.position,
         ward_id: data.ward_id,
-        owner_id: data.owner_id
+        owner_id: data.owner_id,
       });
 
       if (response && response.EC === 0) {
         toast.success("Cập nhật nhà thành công!");
         setAvatarPreview("");
         navigate("/house");
-        
       } else {
         toast.error("Cập nhật nhà thất bại!");
       }
-      console.log(response)
+      console.log(response);
     } catch (error) {
       console.error("Gửi dữ liệu thất bại:", error);
     }
-    
   };
 
   return (
@@ -260,7 +256,7 @@ const UpdateHouse = () => {
           </Col>
         </Row>
         <Row className="mb-3">
-        <Col md={4}>
+          <Col md={4}>
             <Form.Group controlId="area">
               <Form.Label>Diện tích (m²)</Form.Label>
               <Form.Control
@@ -307,7 +303,7 @@ const UpdateHouse = () => {
           </Col>
         </Row>
         <Row className="mb-3">
-        <Col md={4}>
+          <Col md={4}>
             <Form.Group controlId="yearBuilt">
               <Form.Label>Năm xây dựng</Form.Label>
               <Form.Control
@@ -321,7 +317,7 @@ const UpdateHouse = () => {
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
-          
+
           <Col md={4}>
             <Form.Group controlId="longitude">
               <Form.Label>Kinh độ</Form.Label>
@@ -389,7 +385,7 @@ const UpdateHouse = () => {
             </Form.Group>
           </Col>
           <Col md={4}>
-          <Form.Group controlId="owner_id">
+            <Form.Group controlId="owner_id">
               <Form.Label>Chủ sỡ hữu</Form.Label>
               <Form.Control
                 as="select"
@@ -410,7 +406,7 @@ const UpdateHouse = () => {
           </Col>
         </Row>{" "}
         <Row className="mb-3">
-        <Col md={6}>
+          <Col md={6}>
             <Form.Group controlId="position">
               <Form.Label>Vị trí</Form.Label>
               <Form.Control
@@ -454,7 +450,7 @@ const UpdateHouse = () => {
           <Button
             variant="secondary"
             className="mx-2"
-            onClick={() => navigate("/house")}
+            onClick={() => navigate("/owner/house")}
           >
             Hủy
           </Button>

@@ -111,7 +111,7 @@ const DetailBuilding = () => {
           <Button
             variant="warning"
             onClick={() =>
-              navigate(`/building/update/${detailBuilding.id}`, {
+              navigate(`/owner/building/update/${detailBuilding.id}`, {
                 state: detailBuilding,
               })
             }

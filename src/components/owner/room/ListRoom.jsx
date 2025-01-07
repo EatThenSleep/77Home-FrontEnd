@@ -1,17 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Row,
   Col,
   Card,
   Button,
-  Form
+  Form,
+  Badge,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
-import "../../../styles/ListRoom.scss";
+import {
+  FaSearch,
+  FaPlus,
+  FaTrash,
+  FaHome,
+  FaUsers,
+  FaMoneyBillWave,
+  FaExpandArrowsAlt,
+} from "react-icons/fa";
 import DeleteRoom from "./DeleteRoom";
+import "../../../styles/ListRoom.scss";
 const ListRoom = () => {
   const [rooms, setRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
@@ -37,7 +47,7 @@ const ListRoom = () => {
   const fetchHouses = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/house");
-      setHouses(response.data.DT); // Lưu danh sách nhà vào state
+      setHouses(response.data.DT);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu nhà:", error);
     }
@@ -47,157 +57,192 @@ const ListRoom = () => {
     fetchHouses();
   }, []);
 
-  // Xử lý khi nhấn nút "Chi tiết phòng"
   const handleViewDetails = (roomId) => {
-    navigate(`/room/${roomId}`);
+    navigate(`/owner/room/${roomId}`);
   };
 
   const handleDeleteRoom = (room) => {
-    setSelectedRoom(room); // Lưu phòng vào state để xóa
-    setShowDeleteModal(true); // Mở modal xác nhận xóa
+    setSelectedRoom(room);
+    setShowDeleteModal(true);
   };
 
-  // Lọc phòng theo tên và trạng thái
   const filteredRooms = rooms
-    .filter(room => room.name.toLowerCase().includes(searchQuery.toLowerCase())) // Lọc theo tên phòng
-    .filter(room => {
-      // Lọc theo trạng thái (chuyển đổi statusFilter thành số nếu có giá trị)
+    .filter((room) =>
+      room.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter((room) => {
       return statusFilter ? room.status === parseInt(statusFilter) : true;
     })
-    .filter(room => {
-      // Lọc theo nhà (so sánh với houseFilter, nếu có giá trị)
+    .filter((room) => {
       return houseFilter ? room.house.id === parseInt(houseFilter) : true;
     });
-  // Tính toán số trang
   const pageCount = Math.ceil(filteredRooms.length / itemsPerPage);
 
-  // Xử lý khi thay đổi trang
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected);
   };
 
-  // Tính toán danh sách phòng hiện tại theo trang
   const offset = currentPage * itemsPerPage;
   const currentRooms = filteredRooms.slice(offset, offset + itemsPerPage);
 
   const statusMapping = {
     0: "Còn trống",
     1: "Đã thuê",
-    2: "Bảo trì"
+    2: "Bảo trì",
   };
 
-  // Cập nhật lại danh sách phòng khi thay đổi bộ lọc tìm kiếm hoặc trạng thái
   useEffect(() => {
-    setCurrentPage(0); // Reset về trang 1 khi thay đổi bộ lọc
+    setCurrentPage(0);
   }, [searchQuery, statusFilter, houseFilter]);
 
-  // Hàm callback sau khi xóa thành công
   const handleDeleteSuccess = (roomId) => {
     const updatedRooms = rooms.filter((room) => room.id !== roomId);
-    setRooms(updatedRooms); // Cập nhật lại danh sách phòng gốc
-    setCurrentPage(0); // Đặt lại trang hiện tại về trang đầu tiên
-    setShowDeleteModal(false); // Đóng modal xác nhận xóa
+    setRooms(updatedRooms);
+    setCurrentPage(0);
+    setShowDeleteModal(false);
   };
+
   return (
-    <Container className="list-room-container mt-4">
-      <Button
-        className="btn-room-new"
-        variant="primary"
-        onClick={() => navigate("/room/create")}
-      >
-        Thêm phòng
-      </Button>
-      <h1 className="text-center mb-4">Danh sách các phòng</h1>
+    <Container fluid className="list-room-container py-4">
+      <div className="dashboard-header">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h1 className="page-title">Danh sách phòng</h1>
+          <Button
+            className="btn-add-room"
+            onClick={() => navigate("/owner/room/create")}
+          >
+            <FaPlus /> Thêm phòng mới
+          </Button>
+        </div>
 
-      {/* Thêm input tìm kiếm */}
-      <Row className="mb-3">
-        <Col md={4}> {/* 6 cột để chiếm nửa chiều rộng */}
-          <Form.Group controlId="search" className="mb-4">
-            <Form.Control
-              type="text"
-              placeholder="Nhập tên phòng..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật từ khóa tìm kiếm
-            />
-          </Form.Group>
-        </Col>
+        <Row className="search-filters mb-4">
+          <Col lg={4} md={6} className="mb-3">
+            <div className="search-box">
+              <FaSearch className="search-icon" />
+              <Form.Control
+                type="text"
+                placeholder="Tìm kiếm phòng..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </Col>
 
-        <Col md={4}> {/* 6 cột còn lại */}
-          <Form.Group controlId="statusFilter">
-            <Form.Control
-              as="select"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">Tất cả trạng thái</option>
-              <option value="0">Còn trống</option>
-              <option value="1">Đã thuê</option>
-              <option value="2">Bảo trì</option>
-            </Form.Control>
-          </Form.Group>
-        </Col>
-        <Col md={4}>
-          <Form.Group controlId="houseFilter">
-            <Form.Control
-              as="select"
-              value={houseFilter}
-              onChange={(e) => setHouseFilter(e.target.value)} // Lọc theo nhà
-            >
-              <option value="">Tất cả nhà</option>
-              {houses.map((house) => (
-                <option key={house.id} value={house.id}>
-                  {house.name}
-                </option>
-              ))}
-            </Form.Control>
-          </Form.Group>
-        </Col>
-      </Row>
+          <Col lg={4} md={6} className="mb-3">
+            <div className="filter-select">
+              <Form.Select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value="0">Còn trống</option>
+                <option value="1">Đã thuê</option>
+                <option value="2">Bảo trì</option>
+              </Form.Select>
+            </div>
+          </Col>
 
-      <Row className="mt-5">
+          <Col lg={4} md={6} className="mb-3">
+            <div className="filter-select">
+              <Form.Select
+                value={houseFilter}
+                onChange={(e) => setHouseFilter(e.target.value)}
+              >
+                <option value="">Tất cả nhà</option>
+                {houses.map((house) => (
+                  <option key={house.id} value={house.id}>
+                    {house.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </div>
+          </Col>
+        </Row>
+      </div>
+
+      <Row className="rooms-grid">
         {currentRooms && currentRooms.length > 0 ? (
           currentRooms.map((room) => (
-            <Col key={room.id} md={4} className="mb-4">
-              <Card className="p-3 room-card" onClick={() => handleViewDetails(room.id)} 
-                style={{ cursor: "pointer" }} 
-              >
+            <Col key={room.id} lg={4} md={6} className="mb-4">
+              <Card className="room-card">
+                <div className="room-image">
+                  <img
+                    src={room.avatar || "https://via.placeholder.com/300x200"}
+                    alt={room.name}
+                    className="card-img-top"
+                  />
+                  <Badge className={`status-badge status-${room.status}`}>
+                    {statusMapping[room.status]}
+                  </Badge>
+                </div>
+
                 <Card.Body>
                   <Card.Title className="room-title">{room.name}</Card.Title>
-                  <Card.Text className="room-info">
-                    <b>Diện tích: </b> {room.area} m² <br />
-                    <b>Số người tối đa: </b> {room.maxOccupants} <br />
-                    <b>Giá thuê: </b> {room.monthlyRent.toLocaleString()} VND / tháng <br />
-                    <b>Trạng thái: </b> {statusMapping[room.status]} <br />
-                    <b>Mô tả: </b> <span>{room.description}</span>
-                    <b>Nhà: </b> {room.house.name}
-                  </Card.Text>
-                  <Button
-                    variant="danger"
-                    className="px-4 mt-2 btn-danger btn-a"
-                    onClick={() => handleDeleteRoom(room)}
-                  >
-                    Xóa
-                  </Button>
+
+                  <div className="room-details">
+                    <div className="detail-item">
+                      <FaExpandArrowsAlt />
+                      <span>{room.area} m²</span>
+                    </div>
+                    <div className="detail-item">
+                      <FaUsers />
+                      <span>{room.maxOccupants} người</span>
+                    </div>
+                    <div className="detail-item">
+                      <FaMoneyBillWave />
+                      <span>{room.monthlyRent.toLocaleString()} VND/tháng</span>
+                    </div>
+                    <div className="detail-item">
+                      <FaHome />
+                      <span>{room.house.name}</span>
+                    </div>
+                  </div>
+
+                  <p className="room-description">{room.description}</p>
+
+                  <div className="card-actions">
+                    <Button
+                      variant="primary"
+                      className="btn-view"
+                      onClick={() => handleViewDetails(room.id)}
+                    >
+                      Chi tiết
+                    </Button>
+                    <Button
+                      variant="danger"
+                      className="btn-delete"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteRoom(room);
+                      }}
+                    >
+                      <FaTrash />
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </Col>
           ))
         ) : (
-          <div className="text-center fs-5 fw-bold">
-            Không có phòng phù hợp!
-          </div>
+          <Col className="text-center py-5">
+            <div className="no-results">
+              <i className="fas fa-search mb-3"></i>
+              <h3>Không tìm thấy phòng phù hợp</h3>
+              <p>Vui lòng thử tìm kiếm với tiêu chí khác</p>
+            </div>
+          </Col>
         )}
       </Row>
 
-      {/* Modal Xóa */}
       <DeleteRoom
         show={showDeleteModal}
         handleClose={() => setShowDeleteModal(false)}
         roomData={selectedRoom}
         onDeleteSuccess={handleDeleteSuccess}
       />
-      <Row>
-        <Col md={12}>
+
+      {pageCount > 1 && (
+        <div className="pagination-wrapper">
           <ReactPaginate
             pageCount={pageCount}
             pageRangeDisplayed={3}
@@ -205,9 +250,11 @@ const ListRoom = () => {
             onPageChange={handlePageChange}
             containerClassName={"pagination"}
             activeClassName={"active"}
+            previousLabel={"←"}
+            nextLabel={"→"}
           />
-        </Col>
-      </Row>
+        </div>
+      )}
     </Container>
   );
 };

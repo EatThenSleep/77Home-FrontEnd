@@ -19,7 +19,7 @@ const ListHouseUser = () => {
     "500-1000": false,
     "1000+": false,
   });
-  const [wardFilter, setWardFilter] = useState(""); 
+  const [wardFilter, setWardFilter] = useState("");
   const [wards, setWards] = useState([]);
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ const ListHouseUser = () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/ward/");
       if (response && response.data) {
-        setWards(response.data.DT); 
+        setWards(response.data.DT);
       }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách phường/xã:", error);
@@ -48,7 +48,6 @@ const ListHouseUser = () => {
     fetchWards();
     fetchHouses();
   }, []);
-
 
   const handleStatusChange = (event) => {
     const { name, checked } = event.target;
@@ -67,8 +66,7 @@ const ListHouseUser = () => {
 
   const handleWardChange = (e) => {
     const selectedWardId = e.target.value;
-  setWardFilter(selectedWardId);
-
+    setWardFilter(selectedWardId);
   };
 
   // Xác định số lượng nhà cần hiển thị trên trang hiện tại
@@ -77,51 +75,61 @@ const ListHouseUser = () => {
 
   // Lọc dữ liệu nếu cần (ví dụ: lọc theo trạng thái, khu vực, ...)
   const filteredHouses = houses.filter((house) => {
-    const isNameMatch = house.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const isNameMatch = house.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
     const isStatusMatch =
       (statusFilter.active && house.status === 1) ||
       (statusFilter.repairing && house.status === 2) ||
       (statusFilter.inactive && house.status === 3) ||
-      (!statusFilter.active && !statusFilter.repairing && !statusFilter.inactive); 
+      (!statusFilter.active &&
+        !statusFilter.repairing &&
+        !statusFilter.inactive);
 
-      const isAreaMatch =
+    const isAreaMatch =
       (areaFilter["0-200"] && house.area >= 0 && house.area <= 200) ||
       (areaFilter["200-500"] && house.area >= 200 && house.area <= 500) ||
       (areaFilter["500-1000"] && house.area >= 500 && house.area <= 1000) ||
       (areaFilter["1000+"] && house.area >= 1000) ||
-      (!Object.values(areaFilter).includes(true)); 
+      !Object.values(areaFilter).includes(true);
 
-      const isWardMatch = wardFilter ? house.ward.id === parseInt(wardFilter) : true; 
+    const isWardMatch = wardFilter
+      ? house.ward.id === parseInt(wardFilter)
+      : true;
 
-      return isNameMatch && isStatusMatch && isAreaMatch && isWardMatch;
+    return isNameMatch && isStatusMatch && isAreaMatch && isWardMatch;
   });
 
-  const currentHouses = filteredHouses.slice(indexOfFirstHouse, indexOfLastHouse);
+  const currentHouses = filteredHouses.slice(
+    indexOfFirstHouse,
+    indexOfLastHouse
+  );
 
   // Chuyển trang
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Xử lý điều kiện disable cho nút "Previous" và "Next"
   const isFirstPage = currentPage === 1;
-  const isLastPage = currentPage === Math.ceil(filteredHouses.length / housesPerPage);
+  const isLastPage =
+    currentPage === Math.ceil(filteredHouses.length / housesPerPage);
 
   return (
     <div className="app-container-user">
       <div className="content">
-      <aside className="sidebar">
-      <header className="search-header">
-      <h3>Tìm kiếm</h3>
-        <input 
-          type="text" 
-          className="search-input" 
-          placeholder="Tìm kiếm nhà theo tên..." 
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </header>
-      <hr></hr>
-      <form className="filter-form">
-      <h3>Trạng thái</h3>
+        <aside className="sidebar">
+          <header className="search-header">
+            <h3>Tìm kiếm</h3>
+            <input
+              type="text"
+              className="search-input"
+              placeholder="Tìm kiếm nhà theo tên..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </header>
+          <hr></hr>
+          <form className="filter-form">
+            <h3>Trạng thái</h3>
             <ul>
               <li>
                 <input
@@ -153,47 +161,51 @@ const ListHouseUser = () => {
             </ul>
             <hr></hr>
             <h3>Diện tích</h3>
-          <ul>
-            <li>
-              <input
-                type="checkbox"
-                name="0-200"
-                checked={areaFilter["0-200"]}
-                onChange={handleAreaChange}
-              />
-               0 - 200 m²
-            </li>
-            <li>
-              <input
-                type="checkbox"
-                name="200-500"
-                checked={areaFilter["200-500"]}
-                onChange={handleAreaChange}
-              />
-               200 - 500 m²
-            </li>
-            <li>
-              <input
-                type="checkbox"
-                name="500-1000"
-                checked={areaFilter["500-1000"]}
-                onChange={handleAreaChange}
-              />
-               500 - 1000 m²
-            </li>
-            <li>
-              <input
-                type="checkbox"
-                name="1000+"
-                checked={areaFilter["1000+"]}
-                onChange={handleAreaChange}
-              />
-               Trên 1000 m²
-            </li>
-          </ul>
-          <hr></hr>
-          <h3>Phường/Xã</h3>
-            <select className="search-input"  value={wardFilter} onChange={handleWardChange}>
+            <ul>
+              <li>
+                <input
+                  type="checkbox"
+                  name="0-200"
+                  checked={areaFilter["0-200"]}
+                  onChange={handleAreaChange}
+                />
+                0 - 200 m²
+              </li>
+              <li>
+                <input
+                  type="checkbox"
+                  name="200-500"
+                  checked={areaFilter["200-500"]}
+                  onChange={handleAreaChange}
+                />
+                200 - 500 m²
+              </li>
+              <li>
+                <input
+                  type="checkbox"
+                  name="500-1000"
+                  checked={areaFilter["500-1000"]}
+                  onChange={handleAreaChange}
+                />
+                500 - 1000 m²
+              </li>
+              <li>
+                <input
+                  type="checkbox"
+                  name="1000+"
+                  checked={areaFilter["1000+"]}
+                  onChange={handleAreaChange}
+                />
+                Trên 1000 m²
+              </li>
+            </ul>
+            <hr></hr>
+            <h3>Phường/Xã</h3>
+            <select
+              className="search-input"
+              value={wardFilter}
+              onChange={handleWardChange}
+            >
               <option value="">Tất cả phường/xã</option>
               {wards.map((ward) => (
                 <option key={ward.id} value={ward.id}>
@@ -206,35 +218,42 @@ const ListHouseUser = () => {
         <main className="house-list">
           {currentHouses.length > 0 ? (
             currentHouses.map((house) => (
-              <div className="house-card" key={house.id} onClick={() => navigate(`/user/house/${house.id}`)}>
+              <div
+                className="house-card"
+                key={house.id}
+                onClick={() => navigate(`/house/${house.id}`)}
+              >
                 <img
-                  src={house.avatar || "https://vanangroup.com.vn/wp-content/uploads/2024/05/Hinh-anh-phong-ngu-khach-san-binh-dan-vua-dep-vua-tiet-kiem.jpg"}
+                  src={
+                    house.avatar ||
+                    "https://vanangroup.com.vn/wp-content/uploads/2024/05/Hinh-anh-phong-ngu-khach-san-binh-dan-vua-dep-vua-tiet-kiem.jpg"
+                  }
                   alt={house.name}
                   className="house-image"
                 />
                 <div className="house-details">
-                  <p className={`house-type ${house.status === 1 ? "available" : house.status === 2 ? "repairing" : "inactive"}`}>
-                    {house.status === 1 ? "Đang hoạt động" : house.status === 2 ? "Đang sửa chữa" : "Ngừng hoạt động"}
+                  <p
+                    className={`house-type ${
+                      house.status === 1
+                        ? "available"
+                        : house.status === 2
+                        ? "repairing"
+                        : "inactive"
+                    }`}
+                  >
+                    {house.status === 1
+                      ? "Đang hoạt động"
+                      : house.status === 2
+                      ? "Đang sửa chữa"
+                      : "Ngừng hoạt động"}
                   </p>
                   <h2 className="house-name">{house.name}</h2>
                   <p className="house-description">{house.description}</p>
-                  <p className="house-location">Địa chỉ: {house.address}, phường {house.ward.name}</p>
-                  <div className="row">
-                    <p className="house-meta">Số tầng: {house.numberOfFloors}</p>
-                    <p className="house-meta">Số phòng: {house.numberRooms}</p>
-                  </div>
-                  <div className="row">
-                    <p className="house-meta">Diện tích: {house.area} m²</p>
-                    <p className="house-meta">Năm xây dựng: {house.yearBuilt}</p>
-                  </div>
-                  <div className="row">
-                    <p className="house-meta">Vị trí: {house.position}</p>
-                    <p className="house-meta">Khu vực: {house.region}</p>
-                  </div>
-                  <p className="house-meta">Tên chủ sở hữu: {house.owner.fullName}</p>
+                  <p className="house-location">
+                    Địa chỉ: {house.address}, phường {house.ward.name}
+                  </p>
                 </div>
               </div>
-
             ))
           ) : (
             <p>Không tìm thấy kết quả phù hợp.</p>
@@ -252,7 +271,9 @@ const ListHouseUser = () => {
             </button>
 
             {/* Page Numbers */}
-            {Array.from({ length: Math.ceil(filteredHouses.length / housesPerPage) }).map((_, index) => (
+            {Array.from({
+              length: Math.ceil(filteredHouses.length / housesPerPage),
+            }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => paginate(index + 1)}

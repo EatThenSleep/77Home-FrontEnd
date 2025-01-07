@@ -57,7 +57,7 @@ const ListHouse = () => {
   };
 
   const fetchAllWard = async () => {
-    const {DT} = await getAllWard();
+    const { DT } = await getAllWard();
 
     if (DT) {
       setWardList(DT);
@@ -65,52 +65,54 @@ const ListHouse = () => {
   };
 
   const fetchAllListHouse = async () => {
-    const {data} = await axios.get("http://localhost:8080/api/v1/house");
+    const { data } = await axios.get("http://localhost:8080/api/v1/house");
     if (data) {
       setListHouse(data.DT);
       setFilteredHouses(data.DT);
     }
   };
-  
+
   const filterHouses = () => {
     return listHouse.filter((building) => {
       const buildingName = building.name.toLowerCase();
       const searchTermLower = searchTerm.toLowerCase();
       const nameMatch = !searchTerm || buildingName.includes(searchTermLower);
-  
+
       const areaSize =
         typeof building.area === "string"
           ? parseInt(building.area.replace(/\D/g, ""), 10)
           : building.area;
       const areaSizeMatch =
         areaSize >= areaSizeRange[0] && areaSize <= areaSizeRange[1];
-  
+
       const housePrice = building.price
         ? parseInt(building.price.replace(/\D/g, ""), 10)
         : 0; // Default to 0 if price is undefined or invalid
       const priceMatch =
-        housePrice >= priceRange[0] * 1000000 && housePrice <= priceRange[1] * 1000000;
-  
+        housePrice >= priceRange[0] * 1000000 &&
+        housePrice <= priceRange[1] * 1000000;
+
       const statusMatch =
-        selectedStatus === "" || building.status === parseInt(selectedStatus, 10);
-  
+        selectedStatus === "" ||
+        building.status === parseInt(selectedStatus, 10);
+
       const wardMatch =
         selectedWard === "" || building.ward_id === parseInt(selectedWard, 10);
-  
-      return nameMatch && areaSizeMatch && statusMatch && priceMatch && wardMatch;
+
+      return (
+        nameMatch && areaSizeMatch && statusMatch && priceMatch && wardMatch
+      );
     });
   };
-  
-  
+
   const handleSearch = () => {
     const filteredHouses = filterHouses();
     setFilteredHouses(filteredHouses);
     setCurrentPage(0); // Reset to the first page when applying filters
   };
-  
 
   const handleViewDetail = (houseId) => {
-    navigate(`/house/${houseId}`);
+    navigate(`/owner/house/${houseId}`);
   };
 
   const handleTongleModalConfirm = () => {
@@ -125,7 +127,7 @@ const ListHouse = () => {
     const updatedList = listHouse.filter((house) => house.id !== houseId);
     setListHouse(updatedList);
     setFilteredHouses(updatedList);
-    setOpenModalDelete(false); 
+    setOpenModalDelete(false);
   };
 
   return (
@@ -133,7 +135,7 @@ const ListHouse = () => {
       <Button
         className="btn-create-new"
         variant="primary"
-        onClick={() => navigate("/house/create")}
+        onClick={() => navigate("/owner/house/create")}
       >
         Thêm nhà trọ
       </Button>
@@ -309,7 +311,7 @@ const ListHouse = () => {
           </Form.Select>
         </Col>
         <Col md={2}>
-        <Form.Select
+          <Form.Select
             className="no-scrollbar custom-form-select"
             value={selectedWard}
             onChange={(e) => setSelectedWard(e.target.value)}
@@ -349,7 +351,8 @@ const ListHouse = () => {
                     <Card.Body>
                       <Card.Title>{house.name}</Card.Title>
                       <Card.Text>
-                        <b>Năm xây dựng:</b> <span>{house.yearBuilt}</span> <br />
+                        <b>Năm xây dựng:</b> <span>{house.yearBuilt}</span>{" "}
+                        <br />
                         <b>Mô tả:</b> {truncateText(house.description, 85)}
                         <br />
                         <span>

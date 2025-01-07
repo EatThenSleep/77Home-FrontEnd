@@ -1,206 +1,292 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Container, Form, Button, Row, Col, Spinner } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form, Row, Col, Container, Button, Card } from "react-bootstrap";
+import * as yup from "yup";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import "../../../styles/UpdateRoom.scss";
 import { toast } from "react-toastify";
-
-const UpdatedRoom = () => {
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { updateRoom } from "../../../service/roomService";
+import "../../../styles/UpdateRoom.scss";
+const UpdateRoom = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const roomDetails = location.state || {};
+  console.log("roomDetails:", roomDetails);
   const navigate = useNavigate();
-  const [room, setRoom] = useState(null);
   const [houses, setHouses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
 
-  // Lấy danh sách nhà từ API
+  const schema = yup.object().shape({
+    name: yup.string().required("Tên phòng không được để trống"),
+    area: yup
+      .number()
+      .typeError("Diện tích không được để trống")
+      .min(1, "Diện tích phải là số dương")
+      .required("Diện tích không được để trống"),
+    maxOccupants: yup
+      .number()
+      .typeError("Số người tối đa không được để trống")
+      .min(1, "Số người tối đa phải là số dương")
+      .required("Số người tối đa không được để trống"),
+    monthlyRent: yup
+      .number()
+      .typeError("Giá thuê không được để trống")
+      .min(1, "Giá thuê phải là số dương")
+      .required("Giá thuê không được để trống"),
+    description: yup.string().required("Mô tả không được để trống"),
+    status: yup.string().required("Trạng thái không được để trống"),
+    house_id: yup.string().required("Vui lòng chọn nhà"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  useEffect(() => {
+    fetchHouses();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchHouses();
+      if (roomDetails) {
+        setValue("name", roomDetails.name);
+        setValue("area", roomDetails.area);
+        setValue("status", roomDetails.status);
+        setValue("maxOccupants", roomDetails.maxOccupants);
+        setValue("monthlyRent", roomDetails.monthlyRent);
+        setValue("description", roomDetails.description);
+        setValue("house_id", roomDetails.house.id);
+        setValue("avatar", roomDetails.avatar);
+        setAvatarPreview(roomDetails.avatar);
+      }
+    };
+
+    fetchData();
+  }, [roomDetails, setValue]);
+
   const fetchHouses = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/house");
       setHouses(response.data.DT);
-      console.log(response.data.DT);
-    } catch (err) {
-      setError("Không thể tải thông tin nhà. Vui lòng thử lại!");
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách nhà:", error);
     }
   };
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-  // Lấy dữ liệu phòng từ API
-  const fetchRoomDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/v1/room/${id}`);
-      setRoom(response.data.DT);
-    } catch (err) {
-      setError("Không thể tải thông tin phòng. Vui lòng thử lại!");
-    } finally {
-      setLoading(false);
+      setAvatarPreview(URL.createObjectURL(file));
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "ssga5jml");
+      formData.append("api_key", "963862276821583");
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dbnofh9a8/image/upload`,
+        formData
+      );
+
+      if (response.data.secure_url) {
+        setPreviewUrls(response.data.secure_url);
+        setValue("avatar", response.data.secure_url); // Update form value
+      }
+    } catch (error) {
+      console.error("Upload ảnh thất bại:", error);
+      toast.error("Không thể tải ảnh lên. Vui lòng thử lại.");
     }
   };
-
-  useEffect(() => {
-    fetchHouses();
-    fetchRoomDetails();
-  }, [id]);
-
-  // Hàm xử lý khi form thay đổi
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setRoom({ ...room, [name]: value });
-  };
-
-  // Hàm lưu thông tin phòng
-  const handleSave = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
+    console.log("Submit data:", data);
     try {
-      await axios.put(`http://localhost:8080/api/v1/room/${id}`, room);
-      toast.success("Cập nhật thành công!");
-      navigate(`/room`); // Quay lại trang chi tiết
-    } catch (err) {
-      toast.error("Có lỗi xảy ra. Vui lòng thử lại!");
+      const response = await updateRoom(id, {
+        name: data.name,
+        area: data.area,
+        maxOccupants: data.maxOccupants,
+        monthlyRent: data.monthlyRent,
+        description: data.description,
+        status: data.status,
+        house_id: data.house_id,
+        avatar: previewUrls,
+      });
+      console.log("res", response);
+
+      if (response && response.EC === 0) {
+        toast.success("Cập nhật phòng thành công!");
+        navigate("/owner/room");
+      } else {
+        toast.error(response?.EM || "Cập nhật phòng thất bại!");
+      }
+    } catch (error) {
+      console.error("Lỗi khi cập nhật:", error);
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
     }
   };
-
-  if (loading) {
-    return (
-      <Container className="text-center mt-5">
-        <Spinner animation="border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </Spinner>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container className="text-center mt-5 text-danger">
-        <h4>{error}</h4>
-      </Container>
-    );
-  }
 
   return (
-    <Container className="create-new-room-container mt-4">
-      <h2 className="text-center mb-4">Chỉnh sửa thông tin phòng</h2>
-      <Form onSubmit={handleSave}>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group controlId="name">
-              <Form.Label>Tên phòng</Form.Label>
-              <Form.Control
-                type="text"
-                name="name"
-                value={room.name|| ""}
-                onChange={handleChange}
-                placeholder="Nhập tên phòng"
-              />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="area">
-              <Form.Label>Diện tích</Form.Label>
-              <Form.Control
-                type="number"
-                name="area"
-                value={room.area || ""}
-                onChange={handleChange}
-                placeholder="Nhập diện tích (m²)"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group controlId="maxOccupants">
-              <Form.Label>Số người tối đa</Form.Label>
-              <Form.Control
-                type="number"
-                name="maxOccupants"
-                value={room.maxOccupants || ""}
-                onChange={handleChange}
-                placeholder="Nhập số người tối đa"
-              />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="monthlyRent">
-              <Form.Label>Giá thuê</Form.Label>
-              <Form.Control
-                type="number"
-                name="monthlyRent"
-                value={room.monthlyRent || ""}
-                onChange={handleChange}
-                placeholder="Nhập giá thuê (VND)"
-              />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={12}>
-            <Form.Group controlId="description">
+    <Container className="update-room-container py-5">
+      <Card className="shadow-lg">
+        <Card.Body>
+          <h2 className="text-center mb-4">Cập nhật phòng</h2>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Row>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Tên phòng</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Nhập tên phòng"
+                    {...register("name")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">{errors.name?.message}</p>
+                </Form.Group>
+              </Col>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Diện tích (m²)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Nhập diện tích"
+                    {...register("area")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">{errors.area?.message}</p>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Số người tối đa</Form.Label>
+                  <Form.Control
+                    type="number"
+                    {...register("maxOccupants")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">
+                    {errors.maxOccupants?.message}
+                  </p>
+                </Form.Group>
+              </Col>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Giá thuê (VNĐ)</Form.Label>
+                  <Form.Control
+                    type="number"
+                    {...register("monthlyRent")}
+                    className="rounded-pill"
+                  />
+                  <p className="text-danger small">
+                    {errors.monthlyRent?.message}
+                  </p>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Form.Group className="mb-3">
               <Form.Label>Mô tả</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                name="description"
-                value={room.description || ""}
-                onChange={handleChange}
-                placeholder="Nhập mô tả"
+                {...register("description")}
+                className="rounded"
               />
+              <p className="text-danger small">{errors.description?.message}</p>
             </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          <Col md={6}>
-            <Form.Group controlId="status">
-              <Form.Label>Trạng thái</Form.Label>
-              <Form.Control
-                as="select"
-                name="status"
-                value={room.status}
-                onChange={handleChange}
+
+            <Row>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Trạng thái</Form.Label>
+                  <Form.Select {...register("status")} className="rounded-pill">
+                    <option value="">Chọn trạng thái</option>
+                    <option value="0">Còn trống</option>
+                    <option value="1">Đã thuê</option>
+                    <option value="2">Bảo trì</option>
+                  </Form.Select>
+                  <p className="text-danger small">{errors.status?.message}</p>
+                </Form.Group>
+              </Col>
+              <Col lg={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Nhà</Form.Label>
+                  <Form.Select
+                    {...register("house_id")}
+                    className="rounded-pill"
+                  >
+                    <option value="">Chọn nhà</option>
+                    {houses.map((house) => (
+                      <option key={house.id} value={house.id}>
+                        {house.name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <p className="text-danger small">
+                    {errors.house_id?.message}
+                  </p>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <div className="mb-4">
+              <p className="mb-2">Hình ảnh phòng</p>
+              <div className="image-upload-container">
+                <label className="upload-label">
+                  <FaCloudUploadAlt size={30} />
+                  <span>Tải lên hình ảnh</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                  />
+                </label>
+                <div className="image-preview-container">
+                  {avatarPreview && (
+                    <div className="preview-image-wrapper">
+                      <img src={avatarPreview} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <Button
+                variant="secondary"
+                className="btn-submit px-5  rounded-pill mx-2"
+                onClick={() => navigate("/owner/room")}
               >
-                <option value="">Chọn trạng thái</option>
-                <option value="0">Còn trống</option>
-                <option value="1">Đã thuê</option>
-                <option value="2">Bảo trì</option>
-              </Form.Control>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group controlId="house_id">
-              <Form.Label>Nhà</Form.Label>
-              <Form.Control
-                as="select"
-                name="house_id"
-                value={room.house.id ||""}
-                onChange={handleChange}
+                Hủy
+              </Button>
+              <Button
+                variant="primary"
+                type="submit"
+                className="btn-submit px-5 rounded-pill"
               >
-                <option value="">Chọn nhà</option>
-                {houses.map((house) => (
-                  <option key={house.id} value={house.id}>
-                    {house.name}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col md={12} className="text-center">
-            <Button variant="primary" type="submit" className="px-5" style={{height: "38px", textAlign: "center"}}>
-              Lưu
-            </Button>
-            <Button
-              variant="secondary"
-              className="px-5 ms-3"
-              onClick={() => navigate(`/room/${id}`)}
-            >
-              Hủy
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+                Cập nhật
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
     </Container>
   );
 };
 
-export default UpdatedRoom;
+export default UpdateRoom;

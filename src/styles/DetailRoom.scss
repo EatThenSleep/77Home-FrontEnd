@@ -1,40 +1,81 @@
 .detail-room-container {
-    width: 550px;
-    .room-title {
-      font-size: 2rem; // Kích thước tiêu đề lớn hơn
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-  
-    .room-info {
-      font-size: 1.4rem; // Kích thước thông tin phòng
-      line-height: 1.8; // Khoảng cách giữa các dòng
-    }
-  
-    h1, h2 {
-      font-size: 2.5rem; // Tăng kích thước tiêu đề chính
-      margin-bottom: 20px;
-    }
-
-    .btn-btn-back, .btn-edit-room {
-     margin-left: 2px;
-      border-radius: 8px; // Tạo góc bo tròn đẹp hơn
-    }
-  
-    .btn-edit-room {
-      background-color: #ffc107; // Màu warning
-      color: #212529; // Màu chữ đen
-      border: none;
-  
-      &:hover {
-        background-color: #e0a800; // Màu khi hover
+  .room-images {
+    .main-image {
+      img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
       }
     }
-  
-    .card {
-      padding: 30px; // Tăng khoảng cách bên trong card
-      font-size: 1.1rem; // Tăng kích thước chữ trong card
+    
+    .row img {
+      height: 150px;
+      object-fit: cover;
+      transition: transform 0.2s;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
     }
   }
-  
+
+  .room-info-card {
+    height: 100%;
+    
+    .room-title {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    .price-tag {
+      h3 {
+        font-weight: 700;
+        
+        small {
+          font-size: 0.6em;
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .room-details {
+      .detail-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+        
+        i {
+          width: 25px;
+          color: #3498db;
+          margin-right: 10px;
+        }
+        
+        span {
+          color: #34495e;
+        }
+      }
+    }
+
+    .description {
+      h5 {
+        color: #2c3e50;
+        font-weight: 600;
+      }
+      
+      p {
+        color: #7f8c8d;
+        line-height: 1.6;
+      }
+    }
+
+    .action-buttons {
+      button {
+        padding: 10px 20px;
+        
+        i {
+          font-size: 0.9em;
+        }
+      }
+    }
+  }
+}

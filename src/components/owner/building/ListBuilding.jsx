@@ -113,7 +113,7 @@ const ListBuilding = () => {
   };
 
   const handleViewDetail = (buildingId) => {
-    navigate(`/building/${buildingId}`);
+    navigate(`/owner/building/${buildingId}`);
   };
 
   const handleTongleModalConfirm = () => {
@@ -129,7 +129,7 @@ const ListBuilding = () => {
       <Button
         className="btn-create-new"
         variant="primary"
-        onClick={() => navigate("/building/create")}
+        onClick={() => navigate("/owner/building/create")}
       >
         Thêm tòa nhà
       </Button>
@@ -288,7 +288,7 @@ const ListBuilding = () => {
                       src={building.avatar}
                       alt={`Hình ảnh của ${building.name}`}
                       className="image-building"
-                      onClick={() => handleViewDetail(building.id)}
+                      onClick={() => handleViewDetail(`${building.id}`)}
                     />
                   </Col>
                   <Col md={8} className="text-start">

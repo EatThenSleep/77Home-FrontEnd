@@ -433,7 +433,7 @@ const UpdateBuilding = () => {
           <Button
             variant="secondary"
             className="mx-2"
-            onClick={() => navigate("/building")}
+            onClick={() => navigate("/owner/building")}
           >
             Hủy
           </Button>

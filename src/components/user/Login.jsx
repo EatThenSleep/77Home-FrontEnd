@@ -9,8 +9,9 @@ import { IoMdLock } from "react-icons/io";
 import { IoMailOutline } from "react-icons/io5";
 import { AiTwotoneEyeInvisible, AiFillEye } from "react-icons/ai";
 import "../../styles/Login.scss";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../../service/authService";
+import { toast } from "react-toastify";
 const schema = yup.object({
   email: yup
     .string()
@@ -19,7 +20,7 @@ const schema = yup.object({
   password: yup.string().required("Password không được để trống!"),
 });
 
-const Login = ({ onSubmit }) => {
+const Login = () => {
   const {
     register,
     handleSubmit,
@@ -27,18 +28,36 @@ const Login = ({ onSubmit }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleFormSubmit = (data) => {
-    if (onSubmit) {
-      onSubmit(data);  
-    }
-    console.log("data", data);
-  };
+    const handleFormSubmit = async (data) => {
+      try {
+        let res = await loginUser(data);
+        if (res && res.EC === 0) {
+          // Lưu thông tin auth vào localStorage
+          localStorage.setItem("auth", JSON.stringify(res.DT));
+          toast.success("Đăng nhập thành công");
+
+          // Điều hướng dựa vào role
+          const userRole = res.DT.role?.DT?.[0];
+          if (userRole === "Admin") {
+            navigate("/admin/dashboard");
+          } else if (userRole === "Owner") {
+            navigate("/owner/dashboard");
+          } else {
+            navigate("/");
+          }
+        }
+      } catch (error) {
+        console.log("Error", error.message);
+        toast.error("Đăng nhập thất bại");
+      }
+    };
 
   return (
     <Container
@@ -134,7 +153,7 @@ const Login = ({ onSubmit }) => {
           <Button
             variant="primary"
             type="submit"
-            onClick={onSubmit}
+            onClick={() => handleFormSubmit()}
             className="w-100 fw-semibold mb-3"
             style={{
               backgroundColor: "#5a67d8",
