@@ -58,7 +58,6 @@ const UpdateBuilding = () => {
   const location = useLocation();
   const buildingDetails = location.state || {};
   const [userList, setUserList] = useState([]);
-  console.log("data", buildingDetails);
   const {
     register,
     handleSubmit,
@@ -142,35 +141,36 @@ const UpdateBuilding = () => {
   const onSubmit = async (data) => {
     console.log("data", data);
     console.log("avatar", avatarUrl);
-
-    try {
-      // Gọi createBuilding và chờ đợi kết quả
-      const response = await updateBuilding(id, {
-        name: data.name,
-        address: data.address,
-        area: data.area,
-        createdBy: data.createdBy,
-        description: data.description,
-        yearBuilt: data.yearBuilt,
-        numberOfFloors: data.numberOfFloors,
-        status: data.status,
-        ward_id: data.ward_id,
-        ownerRepresent: data.ownerRepresent,
-        longitude: data.longitude,
-        latitude: data.latitude,
-        region: data.region,
-        avatar: avatarUrl,
-      });
-      if (response && response.EC === 0) {
-        toast.success("Cập nhật toà nhà thành công!");
-        setAvatarPreview("");
-        navigate("/owner/building");
-      } else {
-        toast.error("Cập nhật tòa nhà thất bại!");
-      }
-    } catch (error) {
-      console.error("Gửi dữ liệu thất bại:", error);
+if (avatarUrl.length > 0) {
+  try {
+    // Gọi createBuilding và chờ đợi kết quả
+    const response = await updateBuilding(id, {
+      name: data.name,
+      address: data.address,
+      area: data.area,
+      createdBy: data.createdBy,
+      description: data.description,
+      yearBuilt: data.yearBuilt,
+      numberOfFloors: data.numberOfFloors,
+      status: data.status,
+      ward_id: data.ward_id,
+      ownerRepresent: data.ownerRepresent,
+      longitude: data.longitude,
+      latitude: data.latitude,
+      region: data.region,
+      avatar: avatarUrl,
+    });
+    if (response && response.EC === 0) {
+      toast.success("Cập nhật toà nhà thành công!");
+      setAvatarPreview("");
+      navigate("/owner/building");
+    } else {
+      toast.error("Cập nhật tòa nhà thất bại!");
     }
+  } catch (error) {
+    console.error("Gửi dữ liệu thất bại:", error);
+  }
+}
   };
   return (
     <Container className="content-container">

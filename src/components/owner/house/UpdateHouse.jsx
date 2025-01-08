@@ -95,7 +95,7 @@ const UpdateHouse = () => {
         setValue("latitude", houseDetails.latitude);
         setValue("region", houseDetails.region);
         setValue("position", houseDetails.position);
-        setValue("ward_id", houseDetails.ward_id);
+        setValue("ward_id", houseDetails.ward.id);
         setValue("owner_id", houseDetails.owner.citizenNumber);
 
         setAvatarPreview(houseDetails.avatar);
@@ -147,6 +147,7 @@ const UpdateHouse = () => {
   };
 
   const onSubmit = async (data) => {
+    if (avatarUrl.length > 0) {
     try {
       const response = await updateHouse(id, {
         name: data.name,
@@ -169,7 +170,7 @@ const UpdateHouse = () => {
       if (response && response.EC === 0) {
         toast.success("Cập nhật nhà thành công!");
         setAvatarPreview("");
-        navigate("/house");
+        navigate("/owner/house");
       } else {
         toast.error("Cập nhật nhà thất bại!");
       }
@@ -177,6 +178,7 @@ const UpdateHouse = () => {
     } catch (error) {
       console.error("Gửi dữ liệu thất bại:", error);
     }
+  }
   };
 
   return (

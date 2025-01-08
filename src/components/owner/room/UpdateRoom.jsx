@@ -87,7 +87,7 @@ const UpdateRoom = () => {
     if (!file) return;
 
     try {
-      setAvatarPreview(URL.createObjectURL(file));
+      setAvatarPreview(URL.createObjectURL(file)); // Hiển thị preview ảnh
 
       const formData = new FormData();
       formData.append("file", file);
@@ -100,16 +100,20 @@ const UpdateRoom = () => {
       );
 
       if (response.data.secure_url) {
-        setPreviewUrls(response.data.secure_url);
-        setValue("avatar", response.data.secure_url); // Update form value
+        setPreviewUrls(response.data.secure_url); // Cập nhật trạng thái URL ảnh
+        setValue("avatar", response.data.secure_url); // Cập nhật giá trị form
+      } else {
+        throw new Error("Upload không trả về URL ảnh");
       }
     } catch (error) {
       console.error("Upload ảnh thất bại:", error);
       toast.error("Không thể tải ảnh lên. Vui lòng thử lại.");
     }
   };
+
   const onSubmit = async (data) => {
     console.log("Submit data:", data);
+  if (previewUrls.length > 0) {
     try {
       const response = await updateRoom(id, {
         name: data.name,
@@ -119,8 +123,9 @@ const UpdateRoom = () => {
         description: data.description,
         status: data.status,
         house_id: data.house_id,
-        avatar: previewUrls,
+        avatar: previewUrls, // Đảm bảo giá trị là URL, không phải mảng
       });
+
       console.log("res", response);
 
       if (response && response.EC === 0) {
@@ -133,7 +138,9 @@ const UpdateRoom = () => {
       console.error("Lỗi khi cập nhật:", error);
       toast.error("Có lỗi xảy ra, vui lòng thử lại.");
     }
+  }
   };
+
 
   return (
     <Container className="update-room-container py-5">

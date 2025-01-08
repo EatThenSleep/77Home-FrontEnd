@@ -118,37 +118,38 @@ const CreateNewBuilding = () => {
   const onSubmit = async (data) => {
     console.log("data", data);
     console.log("avatar", avatarUrl);
+if (avatarUrl.length > 0) {
+  try {
+    // Gọi createBuilding và chờ đợi kết quả
+    const response = await createBuilding({
+      name: data.name,
+      address: data.address,
+      area: data.area,
+      createdBy: data.createdBy,
+      description: data.description,
+      yearBuilt: data.yearBuilt,
+      numberOfFloors: data.numberOfFloors,
+      status: data.status,
+      ward_id: data.ward_id,
+      ownerRepresent: data.ownerRepresent,
+      longitude: data.longitude,
+      latitude: data.latitude,
+      region: data.region,
+      avatar: avatarUrl,
+    });
 
-    try {
-      // Gọi createBuilding và chờ đợi kết quả
-      const response = await createBuilding({
-        name: data.name,
-        address: data.address,
-        area: data.area,
-        createdBy: data.createdBy,
-        description: data.description,
-        yearBuilt: data.yearBuilt,
-        numberOfFloors: data.numberOfFloors,
-        status: data.status,
-        ward_id: data.ward_id,
-        ownerRepresent: data.ownerRepresent,
-        longitude: data.longitude,
-        latitude: data.latitude,
-        region: data.region,
-        avatar: avatarUrl,
-      });
-
-      if (response && response.EC === 0) {
-        toast.success("Thêm toà nhà thành công!");
-        setAvatarPreview("");
-        reset();
-        navigate("/building");
-      } else {
-        toast.error("Thêm toà nhà thất bại!");
-      }
-    } catch (error) {
-      console.error("Gửi dữ liệu thất bại:", error);
+    if (response && response.EC === 0) {
+      toast.success("Thêm toà nhà thành công!");
+      setAvatarPreview("");
+      reset();
+      navigate("/owner/building");
+    } else {
+      toast.error("Thêm toà nhà thất bại!");
     }
+  } catch (error) {
+    console.error("Gửi dữ liệu thất bại:", error);
+  }
+}
   };
 
   return (
@@ -412,7 +413,7 @@ const CreateNewBuilding = () => {
           <Button
             variant="secondary"
             className="mx-2"
-            onClick={() => navigate("/owner/building")}
+            onClick={() => navigate("/admin/building")}
           >
             Hủy
           </Button>

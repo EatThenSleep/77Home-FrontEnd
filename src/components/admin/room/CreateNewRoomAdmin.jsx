@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { createNewRoom } from "../../../service/roomService";
 import "../../../styles/CreateNewRoom.scss";
-const CreateNewRoom = () => {
+const CreateNewRoomAdmin = () => {
   const navigate = useNavigate();
   const [houses, setHouses] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState([]);
@@ -43,22 +43,21 @@ const CreateNewRoom = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  
   } = useForm({
     resolver: yupResolver(schema),
   });
   const fetchHouses = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/house");
-    if (response && response.data.DT) {
-      const listHouseByOwner = response.data.DT.filter(
-        (house) => house.owner.citizenNumber === auth.id
-      );
-      console.log("listHouseByOwner ", listHouseByOwner);
-      if (listHouseByOwner.length > 0) {
-        setHouses(listHouseByOwner);
+      if (response && response.data.DT) {
+        const listHouseByOwner = response.data.DT.filter(
+          (house) => house.owner.citizenNumber === auth.id
+        );
+        console.log("listHouseByOwner ", listHouseByOwner);
+        if (listHouseByOwner.length > 0) {
+          setHouses(listHouseByOwner);
+        }
       }
-    }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách nhà:", error);
     }
@@ -66,9 +65,9 @@ const CreateNewRoom = () => {
   useEffect(() => {
     fetchHouses();
   }, []);
-  
+
   const handleImageChange = async (e) => {
-    const file = e.target.files[0]; 
+    const file = e.target.files[0];
     if (!file) return;
 
     try {
@@ -89,35 +88,32 @@ const CreateNewRoom = () => {
       toast.error("Không thể tải ảnh lên. Vui lòng thử lại.");
     }
   };
-    const onSubmit = async (data) => {
-      console.log("Form Data:", data);
-      console.log("Image URL:", previewUrls);
+  const onSubmit = async (data) => {
+    console.log("Form Data:", data);
+    console.log("Image URL:", previewUrls);
+
+    try {
+      const roomData = {
+        ...data,
+        avatar: previewUrls,
+      };
       if (previewUrls.length > 0) {
-        try {
-          // Chuẩn bị dữ liệu phòng
-          const roomData = {
-            ...data,
-            avatar: previewUrls || "", // Đảm bảo avatar không undefined
-          };
-
-          const response = await createNewRoom(roomData);
-          if (response && response.EC === 0) {
-            toast.success("Thêm phòng mới thành công!");
-
-            // Reset trạng thái và form
-            setAvatarPreview(null);
-            setPreviewUrls("");
-            reset();
-            navigate("/owner/room");
-          } else {
-            toast.error(response?.EM || "Thêm phòng thất bại!");
-          }
-        } catch (error) {
-          console.error("Lỗi khi gửi dữ liệu:", error);
-          toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+        const response = await createNewRoom(roomData);
+        if (response && response.EC === 0) {
+          toast.success("Thêm phòng mới thành công!");
+          setAvatarPreview(null);
+          setPreviewUrls("");
+          reset();
+          navigate("/admin/room");
+        } else {
+          toast.error("Thêm phòng thất bại!");
         }
       }
-    };
+    } catch (error) {
+      console.error("Lỗi khi gửi dữ liệu:", error);
+      toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+    }
+  };
 
   return (
     <Container className="create-new-room-container py-5">
@@ -254,7 +250,7 @@ const CreateNewRoom = () => {
               <Button
                 variant="secondary"
                 className="btn-submit px-5  rounded-pill mx-2"
-                onClick={() => navigate("/owner/room")}
+                onClick={() => navigate("/admin/room")}
               >
                 Hủy
               </Button>
@@ -273,4 +269,4 @@ const CreateNewRoom = () => {
   );
 };
 
-export default CreateNewRoom;
+export default CreateNewRoomAdmin;

@@ -5,16 +5,18 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import { createNewRoom } from "../../../service/roomService";
-import "../../../styles/CreateNewRoom.scss";
-const CreateNewRoom = () => {
+import { updateRoom } from "../../../service/roomService";
+import "../../../styles/UpdateRoom.scss";
+const UpdateRoomAdmin = () => {
+  const { id } = useParams();
+  const location = useLocation();
+  const roomDetails = location.state || {};
   const navigate = useNavigate();
   const [houses, setHouses] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
-  const auth = JSON.parse(localStorage.getItem("auth"));
 
   const schema = yup.object().shape({
     name: yup.string().required("Tên phòng không được để trống"),
@@ -42,33 +44,44 @@ const CreateNewRoom = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  useEffect(() => {
+    fetchHouses();
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchHouses();
+      if (roomDetails) {
+        setValue("name", roomDetails.name);
+        setValue("area", roomDetails.area);
+        setValue("status", roomDetails.status);
+        setValue("maxOccupants", roomDetails.maxOccupants);
+        setValue("monthlyRent", roomDetails.monthlyRent);
+        setValue("description", roomDetails.description);
+        setValue("house_id", roomDetails.house.id);
+        setValue("avatar", roomDetails.avatar);
+        setAvatarPreview(roomDetails.avatar);
+      }
+    };
+
+    fetchData();
+  }, [roomDetails, setValue]);
+
   const fetchHouses = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/house");
-    if (response && response.data.DT) {
-      const listHouseByOwner = response.data.DT.filter(
-        (house) => house.owner.citizenNumber === auth.id
-      );
-      console.log("listHouseByOwner ", listHouseByOwner);
-      if (listHouseByOwner.length > 0) {
-        setHouses(listHouseByOwner);
-      }
-    }
+      setHouses(response.data.DT);
     } catch (error) {
       console.error("Lỗi khi lấy danh sách nhà:", error);
     }
   };
-  useEffect(() => {
-    fetchHouses();
-  }, []);
-  
   const handleImageChange = async (e) => {
-    const file = e.target.files[0]; 
+    const file = e.target.files[0];
     if (!file) return;
 
     try {
@@ -83,47 +96,51 @@ const CreateNewRoom = () => {
         `https://api.cloudinary.com/v1_1/dbnofh9a8/image/upload`,
         formData
       );
-      setPreviewUrls(response.data.secure_url); // Chỉ lưu một URL
+
+      if (response.data.secure_url) {
+        setPreviewUrls(response.data.secure_url);
+        setValue("avatar", response.data.secure_url); // Update form value
+      }
     } catch (error) {
       console.error("Upload ảnh thất bại:", error);
       toast.error("Không thể tải ảnh lên. Vui lòng thử lại.");
     }
   };
-    const onSubmit = async (data) => {
-      console.log("Form Data:", data);
-      console.log("Image URL:", previewUrls);
-      if (previewUrls.length > 0) {
-        try {
-          // Chuẩn bị dữ liệu phòng
-          const roomData = {
-            ...data,
-            avatar: previewUrls || "", // Đảm bảo avatar không undefined
-          };
-
-          const response = await createNewRoom(roomData);
-          if (response && response.EC === 0) {
-            toast.success("Thêm phòng mới thành công!");
-
-            // Reset trạng thái và form
-            setAvatarPreview(null);
-            setPreviewUrls("");
-            reset();
-            navigate("/owner/room");
-          } else {
-            toast.error(response?.EM || "Thêm phòng thất bại!");
-          }
-        } catch (error) {
-          console.error("Lỗi khi gửi dữ liệu:", error);
-          toast.error("Có lỗi xảy ra, vui lòng thử lại.");
+  const onSubmit = async (data) => {
+    console.log("Submit data:", data);
+    if(previewUrls.length > 0) {
+    try {
+        const response = await updateRoom(id, {
+          name: data.name,
+          area: data.area,
+          maxOccupants: data.maxOccupants,
+          monthlyRent: data.monthlyRent,
+          description: data.description,
+          status: data.status,
+          house_id: data.house_id,
+          avatar: previewUrls,
+        });
+        console.log("res", response);
+  
+        if (response && response.EC === 0) {
+          toast.success("Cập nhật phòng thành công!");
+          navigate("/admin/room");
+        } else {
+          toast.error(response?.EM || "Cập nhật phòng thất bại!");
         }
+
+      } catch (error) {
+        console.error("Lỗi khi cập nhật:", error);
+        toast.error("Có lỗi xảy ra, vui lòng thử lại.");
       }
-    };
+    }
+  };
 
   return (
-    <Container className="create-new-room-container py-5">
+    <Container className="update-room-container py-5">
       <Card className="shadow-lg">
         <Card.Body>
-          <h2 className="text-center mb-4">Thêm Phòng Mới</h2>
+          <h2 className="text-center mb-4">Cập nhật phòng</h2>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Row>
               <Col lg={6}>
@@ -254,7 +271,7 @@ const CreateNewRoom = () => {
               <Button
                 variant="secondary"
                 className="btn-submit px-5  rounded-pill mx-2"
-                onClick={() => navigate("/owner/room")}
+                onClick={() => navigate("/admin/room")}
               >
                 Hủy
               </Button>
@@ -263,7 +280,7 @@ const CreateNewRoom = () => {
                 type="submit"
                 className="btn-submit px-5 rounded-pill"
               >
-                Thêm
+                Cập nhật
               </Button>
             </div>
           </Form>
@@ -273,4 +290,4 @@ const CreateNewRoom = () => {
   );
 };
 
-export default CreateNewRoom;
+export default UpdateRoomAdmin;
