@@ -164,7 +164,7 @@ const UpdateBuilding = () => {
       if (response && response.EC === 0) {
         toast.success("Cập nhật toà nhà thành công!");
         setAvatarPreview("");
-        navigate("/building");
+        navigate("/owner/building");
       } else {
         toast.error("Cập nhật tòa nhà thất bại!");
       }

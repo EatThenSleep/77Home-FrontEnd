@@ -66,7 +66,6 @@ const Profile = () => {
 
   return (
     <>
-      <Header />
       <div className="profile-container my-2">
         <div className="profile-header">
           <h1>Hồ Sơ Của Tôi</h1>
@@ -159,7 +158,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

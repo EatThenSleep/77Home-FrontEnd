@@ -14,6 +14,7 @@ const CreateNewRoom = () => {
   const [houses, setHouses] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const auth = JSON.parse(localStorage.getItem("auth"));
 
   const schema = yup.object().shape({
     name: yup.string().required("Tên phòng không được để trống"),
@@ -42,13 +43,22 @@ const CreateNewRoom = () => {
     handleSubmit,
     formState: { errors },
     reset,
+  
   } = useForm({
     resolver: yupResolver(schema),
   });
   const fetchHouses = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/house");
-      setHouses(response.data.DT);
+    if (response && response.data.DT) {
+      const listHouseByOwner = response.data.DT.filter(
+        (house) => house.owner.citizenNumber === auth.id
+      );
+      console.log("listHouseByOwner ", listHouseByOwner);
+      if (listHouseByOwner.length > 0) {
+        setHouses(listHouseByOwner);
+      }
+    }
     } catch (error) {
       console.error("Lỗi khi lấy danh sách nhà:", error);
     }
@@ -56,15 +66,14 @@ const CreateNewRoom = () => {
   useEffect(() => {
     fetchHouses();
   }, []);
+  
   const handleImageChange = async (e) => {
-    const file = e.target.files[0]; // Lấy file đầu tiên
+    const file = e.target.files[0]; 
     if (!file) return;
 
     try {
-      // Hiển thị ảnh preview
       setAvatarPreview(URL.createObjectURL(file));
 
-      // Upload ảnh lên Cloudinary
       const formData = new FormData();
       formData.append("file", file);
       formData.append("upload_preset", "ssga5jml");

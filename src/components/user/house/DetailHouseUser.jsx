@@ -9,18 +9,20 @@ const DetailHouseUser = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   useEffect(() => {
-    if (id) {
-      fetch(`http://localhost:8080/api/v1/house/${id}`)
-        .then((response) => {
-          if (!response.ok) throw new Error("Network response was not ok");
-          return response.json();
-        })
-        .then((data) => setHouse(data.DT))
-        .catch((error) =>
-          console.error("Error fetching house details:", error)
-        );
-    }
+fetchAllHouse();
   }, [id]);
+
+ const fetchAllHouse = () =>{
+  if (id) {
+    fetch(`http://localhost:8080/api/v1/house/${id}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json();
+      })
+      .then((data) => setHouse(data.DT))
+      .catch((error) => console.error("Error fetching house details:", error));
+  }
+ }
 
   if (!house) return <div className="loading">Loading...</div>;
 
@@ -109,6 +111,10 @@ const DetailHouseUser = () => {
               <i className="fas fa-map-pin"></i>
               <span> {house.position}</span>
             </div>
+            <div className="overview-item description-item">
+              <i className="fas fa-file-alt"></i>
+              <span>{house.description}</span>
+            </div>
           </div>
         </section>
 
@@ -127,10 +133,6 @@ const DetailHouseUser = () => {
               <i className="fas fa-envelope"></i>
               <span>{house.owner.email}</span>
             </div>
-          </div>
-          <div className="description">
-            <h3>Description</h3>
-            <p>{house.description}</p>
           </div>
         </section>
 
@@ -171,6 +173,7 @@ const DetailHouseUser = () => {
                   <button
                     className="book-now-btn"
                     onClick={() => handleRoomBooking(room)}
+                    disabled={room.status == 1}
                   >
                     Book Now
                   </button>
@@ -184,7 +187,11 @@ const DetailHouseUser = () => {
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
           {selectedRoom && (
-            <BookingRoom roomData={selectedRoom} onClose={handleCloseModal} />
+            <BookingRoom
+              roomData={selectedRoom}
+              onClose={handleCloseModal}
+              fetchAllHouse={fetchAllHouse}
+            />
           )}
         </Modal.Body>
       </Modal>

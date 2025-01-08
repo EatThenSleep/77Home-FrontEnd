@@ -6,10 +6,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../../../styles/BookingRoom.scss";
 import { toast } from "react-toastify";
 import { createNewAppoitment } from "../../../service/AppointmentService";
-
-const BookingRoom = ({ roomData, onClose }) => {
+import { updateRoom } from "../../../service/AppointmentService";
+const BookingRoom = ({ roomData, onClose, fetchAllHouse }) => {
   const auth = JSON.parse(localStorage.getItem("auth"));
-  console.log("citizen" , auth.id)
+  console.log("citizen", auth.id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [appointmentData, setAppointmentData] = useState({
     renterId: auth.id || "",
@@ -63,12 +63,17 @@ const BookingRoom = ({ roomData, onClose }) => {
       const response = await createNewAppoitment(formattedData);
 
       if (response && response.EC === 0) {
-       toast.success(response.EM);
-        onClose(); 
-      } 
-      if (response && response.EC === -1) { 
+        toast.success(response.EM);
+        let updatestatusRoom = await updateRoom(appointmentData.rentEntityId, {
+          status: 1,
+        });
+        if (updatestatusRoom.EC === 0) {
+        fetchAllHouse();
+        }
+        onClose();
+      }
+      if (response && response.EC === -1) {
         toast.error(response.EM);
-     
       }
     } catch (error) {
       console.error("Booking error:", error);

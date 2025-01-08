@@ -1,15 +1,11 @@
 import { ToastContainer } from "react-toastify";
 import { Route, Routes } from "react-router-dom";
 import CreateNewHouse from "../../components/owner/house/CreateNewHouse";
-import App from "../../App";
 import { Suspense } from "react";
 import ListHouse from "../../components/owner/house/ListHouse";
 import DetailHouse from "../../components/owner/house/DetailHouse";
 import UpdateHouse from "../../components/owner/house/UpdateHouse";
-import Login from "../../components/user/Login";
-import Register from "../../components/user/Register";
 import CreateNewBuilding from "../../components/owner/building/CreateNewBuilding";
-import ListBuilding from "../../components/owner/building/ListBuilding";
 import DetailBuilding from "../../components/owner/building/DetailBuilding";
 import UpdateBuilding from "../../components/owner/building/UpdateBuilding";
 import ManageHouseUser from "../../components/user/house/ManageHouseUser";
@@ -33,6 +29,15 @@ import PageRegister from "../user/PageRegister";
 import HomePage from "../HomePage";
 import NotFoundPage from "../NotFoundPage";
 import Profile from "../Profile";
+import ViewAppointment from "../user/booking/ViewAppointment";
+import ListAppointmentAdmin from "../admin/Dashboard/ListAppointmentAdmin";
+import ListAppointmentOwner from "../owner/appointment/ListAppointmentOwner";
+import ListBuildingOwner from "../owner/building/ListBuildingOwner";
+import ListBuilding from "../owner/building/ListBuilding"
+import ListHouseOwner from "../owner/house/ListHouseOwner";
+import ListRoomOwner from "../owner/room/ListRoomOwner";
+import Success from "../Success";
+import Cancel from "../Cancer";
 
 const AppRoutes = () => {
   return (
@@ -43,12 +48,11 @@ const AppRoutes = () => {
           <Route path="/login" element={<PageLogin />} />
           <Route path="/register" element={<PageRegister />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          <Route path="/profile" element={<Profile />} />
 
           <Route
             path="/"
             element={
-              <PrivateRoute allowedRoles={["Renter", "Owner"]}>
+              <PrivateRoute allowedRoles={["Renter", "Owner", "Admin"]}>
                 <ManageHouseUser />
               </PrivateRoute>
             }
@@ -56,6 +60,10 @@ const AppRoutes = () => {
             {/* Nested routes under ManageHouseUser */}
             <Route path="house" element={<ListHouseUser />} />
             <Route path="house/:id" element={<DetailHouseUser />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/appointment" element={<ViewAppointment />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/cancel" element={<Cancel />} />
           </Route>
 
           <Route
@@ -67,18 +75,19 @@ const AppRoutes = () => {
             }
           >
             <Route path="dashboard" element={<DashboardOwner />} />
-            <Route path="building" element={<ListBuilding />} />
+            <Route path="building" element={<ListBuildingOwner />} />
             <Route path="building/create" element={<CreateNewBuilding />} />
             <Route path="building/update/:id" element={<UpdateBuilding />} />
             <Route path="building/:id" element={<DetailBuilding />} />
-            <Route path="house" element={<ListHouse />} />
+            <Route path="house" element={<ListHouseOwner />} />
             <Route path="house/create" element={<CreateNewHouse />} />
             <Route path="house/update/:id" element={<UpdateHouse />} />
             <Route path="house/:id" element={<DetailHouse />} />
-            <Route path="room" element={<ListRoom />} />
+            <Route path="room" element={<ListRoomOwner />} />
             <Route path="room/create" element={<CreateNewRoom />} />
             <Route path="room/update/:id" element={<UpdatedRoom />} />
             <Route path="room/:id" element={<DetailRoom />} />
+            <Route path="appointment" element={<ListAppointmentOwner />} />
           </Route>
 
           <Route
@@ -93,6 +102,23 @@ const AppRoutes = () => {
             <Route path="users" element={<UserList />} />
             <Route path="users/:id" element={<UserDetail />} />
             <Route path="users/:id/update" element={<UpdateUser />} />
+
+            <Route path="building" element={<ListBuilding />} />
+            <Route path="building/create" element={<CreateNewBuilding />} />
+            <Route path="building/update/:id" element={<UpdateBuilding />} />
+            <Route path="building/:id" element={<DetailBuilding />} />
+
+            <Route path="house" element={<ListHouse />} />
+            <Route path="house/create" element={<CreateNewHouse />} />
+            <Route path="house/update/:id" element={<UpdateHouse />} />
+            <Route path="house/:id" element={<DetailHouse />} />
+
+            <Route path="room" element={<ListRoom />} />
+            <Route path="room/create" element={<CreateNewRoom />} />
+            <Route path="room/update/:id" element={<UpdatedRoom />} />
+            <Route path="room/:id" element={<DetailRoom />} />
+
+            <Route path="appointment" element={<ListAppointmentAdmin />} />
           </Route>
           <Route path="/*" element={<NotFoundPage />} />
         </Routes>

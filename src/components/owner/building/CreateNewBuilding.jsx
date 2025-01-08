@@ -56,6 +56,7 @@ const CreateNewBuilding = () => {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -65,12 +66,18 @@ const CreateNewBuilding = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [userList, setUserList] = useState([]);
   const [avatarUrl, setAvatarUrl] = useState("");
+  const auth = JSON.parse(localStorage.getItem("auth"));
 
   useEffect(() => {
     fetchAllWard();
-
     fetchAllUser();
   }, []);
+  useEffect(()=>{
+   if(auth)  {
+      setValue("createdBy", auth.id);
+      setValue("ownerRepresent", auth.fullName);
+   }
+  } ,[auth])
   const fetchAllWard = async () => {
     const res = await getAllWard();
     if (res && res.DT) {

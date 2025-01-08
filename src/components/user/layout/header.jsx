@@ -14,6 +14,8 @@ import "../../../styles/Header.scss";
 const Header = () => {
   const navigate = useNavigate();
   const auth = JSON.parse(localStorage.getItem("auth"));
+   
+
   const handleLogout = () => {
     localStorage.removeItem("auth");
     navigate("/login");
@@ -44,8 +46,8 @@ const Header = () => {
               <Dropdown.Toggle variant="light" id="dropdown-profile">
                 {auth?.fullName ? (
                   <div className="d-flex align-items-center">
+                    <span className="mx-2">{auth.fullName}</span>
                     <FaUserCircle size={24} />
-                    <span className="ms-2">{auth.fullName}</span>
                   </div>
                 ) : (
                   <FaUserCircle size={24} />
