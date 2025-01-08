@@ -2,10 +2,11 @@ import { Nav } from "react-bootstrap";
 import {
   FaHome,
   FaUsers,
-  FaShoppingCart,
-  FaClipboardList,
-  FaCog,
-  FaSignOutAlt,
+  FaBuilding,
+  FaHouseUser,
+  FaBed,
+  FaCalendarAlt,
+  FaChartBar,
 } from "react-icons/fa";
 import styles from "./SidebarOwner.module.css";
 import { Link } from "react-router-dom";
@@ -17,27 +18,25 @@ const SidebarOwner = () => {
         <h3 className="text-center">Owner Panel</h3>
       </div>
       <Nav className="flex-column h-100">
-        <Link to="/admin/dashboard" className={styles.navLink}>
-          <FaHome /> Dashboard
-        </Link>
-        <Link to="/admin/users" className={styles.navLink}>
-          <FaUsers /> Users
+        <Link to="/owner/dashboard" className={styles.navLink}>
+          <FaChartBar /> Dashboard{" "}
         </Link>
         <Link to="/owner/building" className={styles.navLink}>
-          <FaShoppingCart /> Tòa nhà
+          <FaBuilding /> Tòa nhà
         </Link>
         <Link to="/owner/house" className={styles.navLink}>
-          <FaClipboardList /> Nhà
+          <FaHouseUser /> Nhà
         </Link>
         <Link to="/owner/room" className={styles.navLink}>
-          <FaClipboardList /> Phòng
+          <FaBed /> Phòng
         </Link>
-        <Link to="/settings" className={styles.navLink}>
-          <FaCog /> Settings
+        <Link to="/owner/appointment" className={styles.navLink}>
+          <FaUsers /> Lịch hẹn
         </Link>
-        <Link to="/logout" className={`${styles.navLink} ${styles.logoutLink}`}>
-          <FaSignOutAlt /> Logout
+        <Link to="/" className={styles.navLink}>
+          <FaHome /> Trang chủ
         </Link>
+       
       </Nav>
     </div>
   );

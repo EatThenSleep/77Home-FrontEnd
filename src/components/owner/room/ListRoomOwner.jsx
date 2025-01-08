@@ -22,7 +22,7 @@ import {
 } from "react-icons/fa";
 import DeleteRoom from "./DeleteRoom";
 import "../../../styles/ListRoom.scss";
-const ListRoom = () => {
+const ListRoomOwner = () => {
   const [rooms, setRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState(""); // State để lưu từ khóa tìm kiếm
@@ -31,15 +31,27 @@ const ListRoom = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [houseFilter, setHouseFilter] = useState("");
-  const itemsPerPage = 6; // Số phòng hiển thị trên mỗi trang
+  const auth = JSON.parse(localStorage.getItem("auth"));
+  const itemsPerPage = 6;
+
   const navigate = useNavigate();
 
   // Hàm lấy dữ liệu từ API
   const fetchRooms = async () => {
     try {
       const response = await axios.get("http://localhost:8080/api/v1/room");
- 
-      setRooms(response.data.DT);
+      console.log(response)
+      if (response && response.data.DT) {
+        const listRoomByOwner = response.data.DT.filter(
+          (room) => room.house.owner.citizenNumber === auth.id
+        );
+        console.log("listRoomByOwner ", listRoomByOwner);
+        if (listRoomByOwner.length > 0) {
+          setRooms(listRoomByOwner);
+        }
+      }
+
+     
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu phòng:", error);
     }
@@ -107,7 +119,7 @@ const ListRoom = () => {
     <Container fluid className="list-room-container py-4">
       <div className="dashboard-header">
         <div className="d-flex justify-content-between align-items-center mb-4">
-          <h1 className="page-title">Danh sách phòng</h1>
+          <h1 className="page-title">Danh sách phòng của {auth.fullName}</h1>
           <Button
             className="btn-add-room"
             onClick={() => navigate("/owner/room/create")}
@@ -260,4 +272,4 @@ const ListRoom = () => {
   );
 };
 
-export default ListRoom;
+export default ListRoomOwner;

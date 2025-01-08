@@ -96,7 +96,7 @@ const UpdateHouse = () => {
         setValue("region", houseDetails.region);
         setValue("position", houseDetails.position);
         setValue("ward_id", houseDetails.ward_id);
-        setValue("owner_id", houseDetails.owner_id);
+        setValue("owner_id", houseDetails.owner.citizenNumber);
 
         setAvatarPreview(houseDetails.avatar);
       }

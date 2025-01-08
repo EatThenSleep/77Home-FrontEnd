@@ -248,10 +248,20 @@ const ListHouseUser = () => {
                       : "Ngừng hoạt động"}
                   </p>
                   <h2 className="house-name">{house.name}</h2>
-                  <p className="house-description">{house.description}</p>
+                  <p className="house-description">
+                    Mô tả: {house.description}
+                  </p>
                   <p className="house-location">
                     Địa chỉ: {house.address}, phường {house.ward.name}
                   </p>
+                  <p className="house-description">
+                    Diện tích: {house.area} m<sup>2</sup>
+                  </p>
+                  <p className="house-description">
+                 Năm xây dựng: {house.yearBuilt} m<sup>2</sup>
+                  </p>
+
+                  <p></p>
                 </div>
               </div>
             ))

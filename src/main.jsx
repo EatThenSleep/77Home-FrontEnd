@@ -6,9 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./components/routes/AppRoutes";
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
-
-  // </StrictMode>
   <BrowserRouter>
     <AppRoutes/>
   </BrowserRouter>

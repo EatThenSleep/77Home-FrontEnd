@@ -8,6 +8,7 @@ export const getAllBuilding = () => {
   return axios.get("/building");
 };
 
+
 export const getBuildingDetail = (id) => {
   return axios.get(`/building/${id}`);
 };
