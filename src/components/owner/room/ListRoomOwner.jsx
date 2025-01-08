@@ -58,11 +58,15 @@ const ListRoomOwner = () => {
   };
 
   const fetchHouses = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/api/v1/house");
-      setHouses(response.data.DT);
-    } catch (error) {
-      console.error("Lỗi khi lấy dữ liệu nhà:", error);
+    let { data } = await axios.get("http://localhost:8080/api/v1/house");
+    if (data && data.DT) {
+      const listHouseByOwner = data.DT.filter(
+        (house) => house.owner.citizenNumber === auth.id
+      );
+      console.log("listHouseByOwner ", listHouseByOwner);
+      if (listHouseByOwner.length > 0) {
+        setHouses(listHouseByOwner);
+      }
     }
   };
   useEffect(() => {

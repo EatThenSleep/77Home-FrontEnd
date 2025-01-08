@@ -60,8 +60,10 @@ const Register = () => {
 
     try {
       let res = await registerUser(authData);
+      console.log("res", res);
       if (res && res.EC === 0) {
-        toast.success(res.EM);
+      
+        toast.success("Đăng ký tài khoản thành công");
         navigate("/login");
       } else {
         toast.error(res.EM);

@@ -2,7 +2,7 @@ import { ToastContainer } from "react-toastify";
 import { Route, Routes } from "react-router-dom";
 import CreateNewHouse from "../../components/owner/house/CreateNewHouse";
 import { Suspense } from "react";
-import ListHouse from "../../components/owner/house/ListHouse";
+import ListHouse from "../admin/house/ListHouse";
 import DetailHouse from "../../components/owner/house/DetailHouse";
 import UpdateHouse from "../../components/owner/house/UpdateHouse";
 import CreateNewBuilding from "../../components/owner/building/CreateNewBuilding";
@@ -11,7 +11,7 @@ import UpdateBuilding from "../../components/owner/building/UpdateBuilding";
 import ManageHouseUser from "../../components/user/house/ManageHouseUser";
 import ListHouseUser from "../../components/user/house/ListHouseUser";
 import DetailHouseUser from "../../components/user/house/DetailHouseUser";
-import ListRoom from "../../components/owner/room/ListRoom";
+import ListRoom from "../admin/room/ListRoom";
 import CreateNewRoom from "../../components/owner/room/CreateNewRoom";
 import DetailRoom from "../../components/owner/room/DetailRoom";
 import UpdatedRoom from "../../components/owner/room/UpdateRoom";
@@ -33,11 +33,20 @@ import ViewAppointment from "../user/booking/ViewAppointment";
 import ListAppointmentAdmin from "../admin/Dashboard/ListAppointmentAdmin";
 import ListAppointmentOwner from "../owner/appointment/ListAppointmentOwner";
 import ListBuildingOwner from "../owner/building/ListBuildingOwner";
-import ListBuilding from "../owner/building/ListBuilding"
+import ListBuilding from "../admin/building/ListBuilding"
 import ListHouseOwner from "../owner/house/ListHouseOwner";
 import ListRoomOwner from "../owner/room/ListRoomOwner";
 import Success from "../Success";
 import Cancel from "../Cancer";
+import CreateNewBuildingAdmin from "../admin/building/CreateNewBuildingAdmin";
+import DetailBuildingAdmin from "../admin/building/DetailBuildingAdmin";
+import UpdateBuildingAdmin from "../admin/building/UpdateBuildingAdmin";
+import DetailRoomAdmin from "../admin/room/DetailRoomAdmin";
+import CreateNewRoomAdmin from "../admin/room/CreateNewRoomAdmin";
+import UpdateRoomAdmin from "../admin/room/UpdateRoomAdmin";
+import CreateNewHouseAdmin from "../admin/house/CreateNewHouseAdmin";
+import UpdateHouseAdmin from "../admin/house/UpdateHouseAdmin";
+import DetailHouseAdmin from "../admin/house/DetailHouseAdmin";
 
 const AppRoutes = () => {
   return (
@@ -104,19 +113,19 @@ const AppRoutes = () => {
             <Route path="users/:id/update" element={<UpdateUser />} />
 
             <Route path="building" element={<ListBuilding />} />
-            <Route path="building/create" element={<CreateNewBuilding />} />
-            <Route path="building/update/:id" element={<UpdateBuilding />} />
-            <Route path="building/:id" element={<DetailBuilding />} />
+            <Route path="building/create" element={<CreateNewBuildingAdmin />} />
+            <Route path="building/update/:id" element={<UpdateBuildingAdmin />} />
+            <Route path="building/:id" element={<DetailBuildingAdmin />} />
 
             <Route path="house" element={<ListHouse />} />
-            <Route path="house/create" element={<CreateNewHouse />} />
-            <Route path="house/update/:id" element={<UpdateHouse />} />
-            <Route path="house/:id" element={<DetailHouse />} />
+            <Route path="house/create" element={<CreateNewHouseAdmin />} />
+            <Route path="house/update/:id" element={<UpdateHouseAdmin />} />
+            <Route path="house/:id" element={<DetailHouseAdmin />} />
 
             <Route path="room" element={<ListRoom />} />
-            <Route path="room/create" element={<CreateNewRoom />} />
-            <Route path="room/update/:id" element={<UpdatedRoom />} />
-            <Route path="room/:id" element={<DetailRoom />} />
+            <Route path="room/create" element={<CreateNewRoomAdmin />} />
+            <Route path="room/update/:id" element={<UpdateRoomAdmin />} />
+            <Route path="room/:id" element={<DetailRoomAdmin />} />
 
             <Route path="appointment" element={<ListAppointmentAdmin />} />
           </Route>

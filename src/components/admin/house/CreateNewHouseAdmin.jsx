@@ -57,7 +57,7 @@ const schema = yup.object({
   ownerId: yup.string().required("Chủ sỡ hữu không được để trống!"),
 });
 
-const CreateNewHouse = () => {
+const CreateNewHouseAdmin = () => {
   const {
     register,
     handleSubmit,
@@ -80,10 +80,11 @@ const CreateNewHouse = () => {
     fetchAllUser();
   }, []);
 
-  useEffect(() => { 
-    if(auth)  {
+  useEffect(() => {
+    if (auth) {
       setValue("ownerId", auth.id);
-   } }, [auth]);
+    }
+  }, [auth]);
   const fetchAllWard = async () => {
     const res = await getAllWard();
     if (res && res.DT) {
@@ -124,41 +125,39 @@ const CreateNewHouse = () => {
   const onSubmit = async (data) => {
     console.log("data", data);
     console.log("avatar", avatarUrl);
- if (avatarUrl.length > 0) { 
-   try {
-     const response = await createHouse({
-       name: data.name,
-       address: data.address,
-       yearBuilt: data.yearBuilt,
-       description: data.description,
-       numberOfFloors: data.numberOfFloors,
-       numberRooms: data.numberOfRooms,
-       area: data.area,
-       status: data.status,
-       avatar: avatarUrl,
-       longitude: data.longitude,
-       latitude: data.latitude,
-       region: data.region,
-       position: data.position,
-       ward_id: data.wardId,
-       owner_id: data.ownerId,
-     });
-     console.log(response);
-     if (response && response.EC === 0) {
-       toast.success("Thêm nhà thành công!");
-       setAvatarPreview("");
-       reset();
-       navigate("/owner/house");
-     } else {
-       toast.error("Thêm nhà thất bại!");
-     }
-     console.log(Object.entries(response.EC));
-   } catch (error) {
-     console.error("Gửi dữ liệu thất bại:", error);
-   }
-    
-
- }
+ if(avatarUrl.length > 0) {
+    try {
+      const response = await createHouse({
+        name: data.name,
+        address: data.address,
+        yearBuilt: data.yearBuilt,
+        description: data.description,
+        numberOfFloors: data.numberOfFloors,
+        numberRooms: data.numberOfRooms,
+        area: data.area,
+        status: data.status,
+        avatar: avatarUrl,
+        longitude: data.longitude,
+        latitude: data.latitude,
+        region: data.region,
+        position: data.position,
+        ward_id: data.wardId,
+        owner_id: data.ownerId,
+      });
+      console.log(response);
+      if (response && response.EC === 0) {
+        toast.success("Thêm nhà thành công!");
+        setAvatarPreview("");
+        reset();
+        navigate("/admin/house");
+      } else {
+        toast.error("Thêm nhà thất bại!");
+      }
+      console.log(Object.entries(response.EC));
+    } catch (error) {
+      console.error("Gửi dữ liệu thất bại:", error);
+    }
+  }
   };
 
   return (
@@ -387,7 +386,7 @@ const CreateNewHouse = () => {
           </Col>
         </Row>{" "}
         <Row className="mb-3">
-        <Col md={6}>
+          <Col md={6}>
             <Form.Group controlId="position">
               <Form.Label>Vị trí</Form.Label>
               <Form.Control
@@ -443,6 +442,5 @@ const CreateNewHouse = () => {
       </Form>
     </Container>
   );
-  
 };
-export default CreateNewHouse;
+export default CreateNewHouseAdmin;

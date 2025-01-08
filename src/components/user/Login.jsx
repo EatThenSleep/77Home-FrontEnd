@@ -35,29 +35,34 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-    const handleFormSubmit = async (data) => {
-      try {
-        let res = await loginUser(data);
-        if (res && res.EC === 0) {
-          // Lưu thông tin auth vào localStorage
-          localStorage.setItem("auth", JSON.stringify(res.DT));
-          toast.success("Đăng nhập thành công");
+  const handleFormSubmit = async (data) => {
+    try {
+      let res = await loginUser(data);
+      console.log("data", res);
+      if (res && res.EC === 0) {
+        // Lưu thông tin auth vào localStorage
+        localStorage.setItem("auth", JSON.stringify(res.DT));
+        toast.success("Đăng nhập thành công");
 
-          // Điều hướng dựa vào role
-          const userRole = res.DT.role?.DT?.[0];
-          if (userRole === "Admin") {
-            navigate("/admin/dashboard");
-          } else if (userRole === "Owner") {
-            navigate("/owner/dashboard");
-          } else {
-            navigate("/");
-          }
+        // Điều hướng dựa vào role
+        const userRole = res.DT.role?.DT?.[0];
+        if (userRole === "Admin") {
+          navigate("/admin/dashboard");
+        } else if (userRole === "Owner") {
+          navigate("/owner/dashboard");
+        } else {
+          navigate("/");
         }
-      } catch (error) {
-        console.log("Error", error.message);
-        toast.error("Đăng nhập thất bại");
       }
-    };
+      if (res && res.EC === -1) {
+        console.log("thất bại")
+        toast.error("Tài khoản hoặc mật khẩu không chính xác");
+      }
+    } catch (error) {
+      console.log("Error", error.message);
+      toast.error("Đăng nhập thất bại");
+    }
+  };
 
   return (
     <Container

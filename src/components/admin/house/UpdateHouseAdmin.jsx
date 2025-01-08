@@ -1,4 +1,4 @@
-/* eslint-disable no-undef */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { Form, Row, Col, Container, InputGroup, Button } from "react-bootstrap";
 import * as yup from "yup";
@@ -6,11 +6,12 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "../../../styles/CreateNewHouse.scss";
 import { getAllWard } from "../../../service/wardService";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getAllUsers } from "../../../service/userService";
-import { createHouse } from "../../../service/houseService";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { updateHouse } from "../../../service/houseService";
+
 const schema = yup.object({
   name: yup.string().required("Tên nhà không được để trống!"),
   address: yup.string().required("Số nhà, Tên đường không được để trống!"),
@@ -26,7 +27,7 @@ const schema = yup.object({
     .required("Số tầng không được để trống!")
     .integer("Số tầng phải là số nguyên!")
     .positive("Số tầng phải là số dương!"),
-  numberOfRooms: yup
+  numberRooms: yup
     .number()
     .transform((value) => (isNaN(value) ? 0 : value))
     .required("Số phòng không được để trống!")
@@ -53,39 +54,66 @@ const schema = yup.object({
   latitude: yup.number().typeError("Vĩ độ không được để trống!"),
   region: yup.string().required("Vùng không được để trống!"),
   position: yup.string().required("Vị trí không được để trống!"),
-  wardId: yup.string().required("Phường/Xã không được để trống!"),
-  ownerId: yup.string().required("Chủ sỡ hữu không được để trống!"),
+  ward_id: yup.string().required("Phường/Xã không được để trống!"),
+  owner_id: yup.string().required("Chủ sỡ hữu không được để trống!"),
 });
 
-const CreateNewHouse = () => {
+const UpdateHouseAdmin = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const location = useLocation();
+  const houseDetails = location.state || {};
+  const [userList, setUserList] = useState([]);
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
   });
-  const navigate = useNavigate();
+
   const [wardList, setWardList] = useState([]);
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [userList, setUserList] = useState([]);
   const [avatarUrl, setAvatarUrl] = useState("");
-  const auth = JSON.parse(localStorage.getItem("auth"));
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchAllWard();
+      await fetchAllUser();
+      console.log("data" , houseDetails)
+      if (houseDetails) {
+        setValue("name", houseDetails.name);
+        setValue("address", houseDetails.address);
+        setValue("yearBuilt", houseDetails.yearBuilt);
+        setValue("description", houseDetails.description);
+        setValue("numberOfFloors", houseDetails.numberOfFloors);
+        setValue("numberRooms", houseDetails.numberRooms);
+        setValue("area", houseDetails.area);
+        setValue("status", houseDetails.status);
+        setValue("avatar", houseDetails.avatar);
+        setValue("longitude", houseDetails.longitude);
+        setValue("latitude", houseDetails.latitude);
+        setValue("region", houseDetails.region);
+        setValue("position", houseDetails.position);
+        setValue("ward_id", houseDetails.ward.id);
+        setValue("owner_id", houseDetails.owner.citizenNumber);
+
+        setAvatarPreview(houseDetails.avatar);
+      }
+    };
+    fetchData();
+    console.log(houseDetails);
+  }, [houseDetails, setValue]);
 
   useEffect(() => {
     fetchAllWard();
-
     fetchAllUser();
   }, []);
 
-  useEffect(() => { 
-    if(auth)  {
-      setValue("ownerId", auth.id);
-   } }, [auth]);
   const fetchAllWard = async () => {
     const res = await getAllWard();
+
     if (res && res.DT) {
       setWardList(res.DT);
     }
@@ -97,11 +125,9 @@ const CreateNewHouse = () => {
       setUserList(res.DT);
     }
   };
-
   const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
     // Hiển thị ảnh preview
     setAvatarPreview(URL.createObjectURL(file));
 
@@ -122,48 +148,43 @@ const CreateNewHouse = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log("data", data);
-    console.log("avatar", avatarUrl);
- if (avatarUrl.length > 0) { 
-   try {
-     const response = await createHouse({
-       name: data.name,
-       address: data.address,
-       yearBuilt: data.yearBuilt,
-       description: data.description,
-       numberOfFloors: data.numberOfFloors,
-       numberRooms: data.numberOfRooms,
-       area: data.area,
-       status: data.status,
-       avatar: avatarUrl,
-       longitude: data.longitude,
-       latitude: data.latitude,
-       region: data.region,
-       position: data.position,
-       ward_id: data.wardId,
-       owner_id: data.ownerId,
-     });
-     console.log(response);
-     if (response && response.EC === 0) {
-       toast.success("Thêm nhà thành công!");
-       setAvatarPreview("");
-       reset();
-       navigate("/owner/house");
-     } else {
-       toast.error("Thêm nhà thất bại!");
-     }
-     console.log(Object.entries(response.EC));
-   } catch (error) {
-     console.error("Gửi dữ liệu thất bại:", error);
-   }
-    
+    if(avatarUrl.length > 0) {
+    try {
+      const response = await updateHouse(id, {
+        name: data.name,
+        address: data.address,
+        yearBuilt: data.yearBuilt,
+        description: data.description,
+        numberOfFloors: data.numberOfFloors,
+        numberRooms: data.numberRooms,
+        area: data.area,
+        status: data.status,
+        avatar: avatarUrl,
+        longitude: data.longitude,
+        latitude: data.latitude,
+        region: data.region,
+        position: data.position,
+        ward_id: data.ward_id,
+        owner_id: data.owner_id,
+      });
 
- }
+      if (response && response.EC === 0) {
+        toast.success("Cập nhật nhà thành công!");
+        setAvatarPreview("");
+        navigate("/admin/house");
+      } else {
+        toast.error("Cập nhật nhà thất bại!");
+      }
+      console.log(response);
+    } catch (error) {
+      console.error("Gửi dữ liệu thất bại:", error);
+    }
+  }
   };
 
   return (
     <Container className="content-container">
-      <h1 className="text-center mb-3">Thêm nhà</h1>
+      <h1 className="text-center mb-3">Cập nhật nhà</h1>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Row className="mb-3">
           <Col md={4}>
@@ -203,12 +224,12 @@ const CreateNewHouse = () => {
         </Row>
         <Row className="mb-3">
           <Col md={6}>
-            <Form.Group controlId="wardId">
+            <Form.Group controlId="ward">
               <Form.Label>Phường/Xã</Form.Label>
               <Form.Select
                 className="no-scrollbar"
-                {...register("wardId")}
-                isInvalid={errors.wardId}
+                {...register("ward_id")}
+                isInvalid={errors.ward_id}
               >
                 <option value="">Chọn phường/Xã</option>
                 {wardList.map((ward) => (
@@ -218,7 +239,7 @@ const CreateNewHouse = () => {
                 ))}
               </Form.Select>
               <Form.Control.Feedback type="invalid">
-                {errors.wardId?.message}
+                {errors.ward_id?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -239,16 +260,17 @@ const CreateNewHouse = () => {
         </Row>
         <Row className="mb-3">
           <Col md={4}>
-            <Form.Group controlId="yearBuilt">
-              <Form.Label>Năm xây dựng</Form.Label>
+            <Form.Group controlId="area">
+              <Form.Label>Diện tích (m²)</Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Nhập năm xây dựng"
-                {...register("yearBuilt")}
-                isInvalid={errors.yearBuilt}
+                placeholder="Nhập diện tích"
+                {...register("area")}
+                defaultValue={0}
+                isInvalid={errors.area}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.yearBuilt?.message}
+                {errors.area?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -268,37 +290,37 @@ const CreateNewHouse = () => {
             </Form.Group>
           </Col>
           <Col md={4}>
-            <Form.Group controlId="numberOfRooms">
+            <Form.Group controlId="numberRooms">
               <Form.Label>Số phòng</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Nhập số phòng"
-                {...register("numberOfRooms")}
+                {...register("numberRooms")}
                 defaultValue={0}
-                isInvalid={errors.numberOfRooms}
+                isInvalid={errors.numberRooms}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.numberOfRooms?.message}
+                {errors.numberRooms?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
         <Row className="mb-3">
           <Col md={4}>
-            <Form.Group controlId="area">
-              <Form.Label>Diện tích (m²)</Form.Label>
+            <Form.Group controlId="yearBuilt">
+              <Form.Label>Năm xây dựng</Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Nhập diện tích"
-                {...register("area")}
-                defaultValue={0}
-                isInvalid={errors.area}
+                placeholder="Nhập năm xây dựng"
+                {...register("yearBuilt")}
+                isInvalid={errors.yearBuilt}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.area?.message}
+                {errors.yearBuilt?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
+
           <Col md={4}>
             <Form.Group controlId="longitude">
               <Form.Label>Kinh độ</Form.Label>
@@ -361,17 +383,17 @@ const CreateNewHouse = () => {
                 <option value="3">Khu quy hoạch</option>
               </Form.Control>
               <Form.Control.Feedback type="invalid">
-                {errors.status?.message}
+                {errors.region?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col md={4}>
-            <Form.Group controlId="ownerId">
+            <Form.Group controlId="owner_id">
               <Form.Label>Chủ sỡ hữu</Form.Label>
               <Form.Control
                 as="select"
-                {...register("ownerId")}
-                isInvalid={errors.ownerId}
+                {...register("owner_id")}
+                isInvalid={errors.owner_id}
               >
                 <option value="">Chọn tên chủ sỡ hữu</option>
                 {userList.map((user) => (
@@ -381,17 +403,17 @@ const CreateNewHouse = () => {
                 ))}
               </Form.Control>
               <Form.Control.Feedback type="invalid">
-                {errors.ownerId?.message}
+                {errors.owner_id?.message}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>{" "}
         <Row className="mb-3">
-        <Col md={6}>
+          <Col md={6}>
             <Form.Group controlId="position">
               <Form.Label>Vị trí</Form.Label>
               <Form.Control
-                type="text"
+                type="string"
                 placeholder="Nhập vị trí"
                 {...register("position")}
                 isInvalid={errors.position}
@@ -431,7 +453,7 @@ const CreateNewHouse = () => {
           <Button
             variant="secondary"
             className="mx-2"
-            onClick={() => navigate("/house")}
+            onClick={() => navigate("/admin/house")}
           >
             Hủy
           </Button>
@@ -443,6 +465,5 @@ const CreateNewHouse = () => {
       </Form>
     </Container>
   );
-  
 };
-export default CreateNewHouse;
+export default UpdateHouseAdmin;

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Container,
   Row,
@@ -7,37 +8,39 @@ import {
   Card,
   Dropdown,
 } from "react-bootstrap";
-import { getAllWard } from "../../../service/wardService";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ReactPaginate from "react-paginate";
 
 import { Range } from "react-range";
 import "../../../styles/ListHouse.scss";
 import { useNavigate } from "react-router-dom";
-import DeleteHouse from "./DeleteHouse";
-const ListHouse = () => {
+import DeleteBuilding from "../../owner/building/DeleteBuilding";
+import { getAllWard } from "../../../service/wardService";
+import { getAllBuilding } from "../../../service/buildingService";
+import "../../../styles/Building.scss";
+const ListBuilding = () => {
   const navigate = useNavigate();
   const [wardList, setWardList] = useState([]);
-  const [listHouse, setListHouse] = useState([]);
+  const [ListBuilding, setListBuilding] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filteredHouses, setFilteredHouses] = useState([]);
+  const [filteredbuildings, setFilteredbuildings] = useState([]);
   const [selectedWard, setSelectedWard] = useState("");
-  const [priceRange, setPriceRange] = useState([0, 100]);
-  const [areaSizeRange, setAreaSizeRange] = useState([0, 500]);
+
+  const [areaSizeRange, setAreaSizeRange] = useState([0, 10000]);
+  const [searchYear, setSearchYear] = useState();
 
   const [selectedStatus, setSelectedStatus] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [isOpenModalDelete, setOpenModalDelete] = useState(false);
-  const [houseData, setHouseData] = useState([]);
+  const [buildingData, setbuildingData] = useState([]);
   const itemsPerPage = 3;
 
   const offset = currentPage * itemsPerPage;
-  const currentItems = filteredHouses.slice(offset, offset + itemsPerPage);
+  const currentItems = filteredbuildings.slice(offset, offset + itemsPerPage);
 
   useEffect(() => {
     fetchAllWard();
-    fetchAllListHouse();
+    fetchAllListBuilding();
   }, []);
 
   const truncateText = (text, maxLength) => {
@@ -51,29 +54,28 @@ const ListHouse = () => {
     2: "Đang sửa chữa",
     3: "Ngừng hoạt động",
   };
-
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
-
   const fetchAllWard = async () => {
-    const { DT } = await getAllWard();
+    const res = await getAllWard();
 
-    if (DT) {
-      setWardList(DT);
+    if (res && res.DT) {
+      setWardList(res.DT);
     }
   };
 
-  const fetchAllListHouse = async () => {
-    const { data } = await axios.get("http://localhost:8080/api/v1/house");
-    if (data) {
-      setListHouse(data.DT);
-      setFilteredHouses(data.DT);
+  const fetchAllListBuilding = async () => {
+    const res = await getAllBuilding();
+
+    if (res && res.DT) {
+      setListBuilding(res.DT);
+      setFilteredbuildings(res.DT);
     }
   };
 
-  const filterHouses = () => {
-    return listHouse.filter((building) => {
+  const filterBuildings = () => {
+    return ListBuilding.filter((building) => {
       const buildingName = building.name.toLowerCase();
       const searchTermLower = searchTerm.toLowerCase();
       const nameMatch = !searchTerm || buildingName.includes(searchTermLower);
@@ -85,49 +87,41 @@ const ListHouse = () => {
       const areaSizeMatch =
         areaSize >= areaSizeRange[0] && areaSize <= areaSizeRange[1];
 
-      const housePrice = building.price
-        ? parseInt(building.price.replace(/\D/g, ""), 10)
-        : 0; // Default to 0 if price is undefined or invalid
-      const priceMatch =
-        housePrice >= priceRange[0] * 1000000 &&
-        housePrice <= priceRange[1] * 1000000;
-
+      const parsedSearchYear = parseInt(searchYear, 10);
+      const yearMatch =
+        !searchYear ||
+        (parsedSearchYear && building.yearBuilt === parsedSearchYear);
+      // console.log("abc :", building.yearBuilt, searchYear);
       const statusMatch =
         selectedStatus === "" ||
         building.status === parseInt(selectedStatus, 10);
 
       const wardMatch =
         selectedWard === "" || building.ward_id === parseInt(selectedWard, 10);
-
+      console.log("selected ward", building.ward_id, selectedWard);
       return (
-        nameMatch && areaSizeMatch && statusMatch && priceMatch && wardMatch
+        nameMatch && areaSizeMatch && statusMatch && yearMatch && wardMatch
       );
     });
   };
 
   const handleSearch = () => {
-    const filteredHouses = filterHouses();
-    setFilteredHouses(filteredHouses);
-    setCurrentPage(0); // Reset to the first page when applying filters
+    const filteredbuildings = filterBuildings();
+    console.log("filteredbuildings", filteredbuildings);
+    setFilteredbuildings(filteredbuildings);
+    setCurrentPage(0);
   };
 
-  const handleViewDetail = (houseId) => {
-    navigate(`/owner/house/${houseId}`);
+  const handleViewDetail = (buildingId) => {
+    navigate(`/admin/building/${buildingId}`);
   };
 
   const handleTongleModalConfirm = () => {
     setOpenModalDelete(!isOpenModalDelete);
   };
-  const handleDeleteHouse = (house) => {
+  const handleDeletebuilding = (building) => {
     handleTongleModalConfirm(isOpenModalDelete);
-    setHouseData(house);
-  };
-
-  const handleDeleteSuccess = (houseId) => {
-    const updatedList = listHouse.filter((house) => house.id !== houseId);
-    setListHouse(updatedList);
-    setFilteredHouses(updatedList);
-    setOpenModalDelete(false);
+    setbuildingData(building);
   };
 
   return (
@@ -135,12 +129,12 @@ const ListHouse = () => {
       <Button
         className="btn-create-new"
         variant="primary"
-        onClick={() => navigate("/owner/house/create")}
+        onClick={() => navigate("/admin/building/create")}
       >
-        Thêm nhà trọ
+        Thêm tòa nhà
       </Button>
       {/* Tiêu đề */}
-      <h1 className="text-center mb-4">Danh sách nhà trọ</h1>
+      <h1 className="text-center mb-4">Danh sách tòa nhà</h1>
 
       {/* Thanh tìm kiếm */}
 
@@ -149,12 +143,11 @@ const ListHouse = () => {
           <Form.Control
             type="text"
             className="custom-form-control"
-            placeholder="Nhà trọ"
+            placeholder="Tòa nhà"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </Col>
-
         <Col md={2}>
           <Dropdown className="border rounded">
             <Dropdown.Toggle variant="none" className="custom-dropdown-toggle">
@@ -187,23 +180,37 @@ const ListHouse = () => {
                   />
                 </Col>
               </Row>
-              <div className="slider-container mt-4">
+              <div className="d-flex justify-content-center flex-wrap mt-3">
                 <Range
                   step={1}
                   min={0}
-                  max={500}
+                  max={10000}
                   values={areaSizeRange}
                   onChange={(values) => setAreaSizeRange(values)}
                   renderTrack={({ props, children }) => (
                     <div
                       {...props}
                       style={{
+                        // eslint-disable-next-line react/prop-types
                         ...props.style,
                         height: "6px",
                         width: "100%",
                         backgroundColor: "#ccc",
                       }}
                     >
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: `${(areaSizeRange[0] / 10000) * 100}%`,
+                          width: `${
+                            ((areaSizeRange[1] - areaSizeRange[0]) / 10000) *
+                            100
+                          }%`,
+                          height: "100%",
+                          backgroundColor: "#007bff",
+                          transition: "all 0.3s ease",
+                        }}
+                      />
                       {children}
                     </div>
                   )}
@@ -216,6 +223,7 @@ const ListHouse = () => {
                         width: "20px",
                         backgroundColor: "#007bff",
                         borderRadius: "50%",
+                        border: "2px solid #007bff",
                         cursor: "pointer",
                       }}
                     />
@@ -225,78 +233,15 @@ const ListHouse = () => {
             </Dropdown.Menu>
           </Dropdown>
         </Col>
-
         <Col md={2}>
-          <Dropdown className="border rounded ">
-            <Dropdown.Toggle variant="none" className="custom-dropdown-toggle">
-              Chọn mức giá
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu className="custom-dropdown-menu">
-              <h5 className="fw-bold ">Mức giá</h5>
-              <Row>
-                <Col md={6}>
-                  <span className="fw-bold px-1">
-                    Từ: {priceRange[0]} triệu
-                  </span>
-                  <Form.Control
-                    className="mt-2"
-                    type="number"
-                    value={priceRange[0]}
-                    readOnly
-                  />
-                </Col>
-                <Col md={6}>
-                  <span className="fw-bold px-1">
-                    Đến: {priceRange[1]} triệu
-                  </span>
-                  <Form.Control
-                    className="mt-2"
-                    type="number"
-                    value={priceRange[1]}
-                    readOnly
-                  />
-                </Col>
-              </Row>
-              <div className="slider-container mt-4">
-                <Range
-                  step={1}
-                  min={0}
-                  max={100}
-                  values={priceRange}
-                  onChange={(values) => setPriceRange(values)}
-                  renderTrack={({ props, children }) => (
-                    <div
-                      {...props}
-                      style={{
-                        ...props.style,
-                        height: "6px",
-                        width: "100%",
-                        backgroundColor: "#ccc",
-                      }}
-                    >
-                      {children}
-                    </div>
-                  )}
-                  renderThumb={({ props }) => (
-                    <div
-                      {...props}
-                      style={{
-                        ...props.style,
-                        height: "20px",
-                        width: "20px",
-                        backgroundColor: "#007bff",
-                        borderRadius: "50%",
-                        cursor: "pointer",
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            </Dropdown.Menu>
-          </Dropdown>
+          <Form.Control
+            type="text"
+            className="custom-form-control"
+            placeholder="Năm xây dựng"
+            value={searchYear}
+            onChange={(e) => setSearchYear(e.target.value)}
+          />
         </Col>
-
         <Col md={2}>
           <Form.Select
             className="custom-form-select"
@@ -307,7 +252,6 @@ const ListHouse = () => {
             <option value="1">Đang hoạt động</option>
             <option value="2">Đang sửa chữa</option>
             <option value="3">Ngừng hoạt động</option>
-            {/* Thêm các trạng thái khác nếu cần */}
           </Form.Select>
         </Col>
         <Col md={2}>
@@ -332,45 +276,49 @@ const ListHouse = () => {
       </Row>
 
       {/* Danh sách nhà trọ */}
-      <Row className="mt-5">
+      <Row className="mt-5 custom-row-height">
         {currentItems && currentItems.length > 0 ? (
-          currentItems.map((house, index) => (
-            <Col md={12} key={house.id} className="mb-3">
+          currentItems.map((building) => (
+            <Col md={12} key={building.id} className="mb-3">
               <Card className="p-3">
                 <Row>
                   <Col md={4}>
                     <Card.Img
                       variant="top"
-                      src={house.avatar}
-                      alt={`Hình ảnh của ${house.name}`}
-                      className="image-house"
-                      onClick={() => handleViewDetail(house.id)}
+                      src={building.avatar}
+                      alt={`Hình ảnh của ${building.name}`}
+                      className="image-building"
+                      onClick={() => handleViewDetail(`${building.id}`)}
                     />
                   </Col>
                   <Col md={8} className="text-start">
                     <Card.Body>
-                      <Card.Title>{house.name}</Card.Title>
+                      <Card.Title>{building.name}</Card.Title>
                       <Card.Text>
-                        <b>Năm xây dựng:</b> <span>{house.yearBuilt}</span>{" "}
-                        <br />
-                        <b>Mô tả:</b> {truncateText(house.description, 85)}
+                        <b>Mô tả:</b> {truncateText(building.description, 85)}
                         <br />
                         <span>
-                          <b>Địa chỉ:</b> {house.address}
+                          <b>Địa chỉ:</b> {building.address} ,
+                          <span>phường </span>
+                          {building.ward.name}
                         </span>
                         <br />
                         <span>
-                          <b>Diện tích:</b> {house.area} m<sup>2</sup>
+                          <b>Diện tích:</b> {building.area} m<sup>2</sup>
                         </span>
                         <br />
                         <span>
-                          <b>Trạng thái:</b> {statusMapping[house.status]}
+                          <b>Năm xây dựng:</b> {building.yearBuilt}
+                        </span>
+                        <br />
+                        <span>
+                          <b>Trạng thái:</b> {statusMapping[building.status]}
                         </span>
                       </Card.Text>
                       <Button
                         variant="danger"
                         className="px-4 mt-2"
-                        onClick={() => handleDeleteHouse(house)}
+                        onClick={() => handleDeletebuilding(building)}
                       >
                         Xóa
                       </Button>
@@ -381,7 +329,7 @@ const ListHouse = () => {
             </Col>
           ))
         ) : (
-          <div className="text-center fs-5  fw-bold">
+          <div className="text-center fs-5 fw-bold">
             Không có nhà trọ phù hợp!
           </div>
         )}
@@ -390,20 +338,20 @@ const ListHouse = () => {
         previousLabel="Trước"
         nextLabel="Sau"
         onPageChange={handlePageClick}
-        pageCount={Math.ceil(filteredHouses.length / itemsPerPage)}
+        pageCount={Math.ceil(filteredbuildings.length / itemsPerPage)}
         containerClassName="pagination"
         activeClassName="active"
         disabledClassName="disabled"
       />
 
-      <DeleteHouse
+      <DeleteBuilding
         show={isOpenModalDelete}
         handleClose={handleTongleModalConfirm}
-        houseData={houseData}
-        onDeleteSuccess={handleDeleteSuccess}
+        buildingData={buildingData}
+        fetchAllListBuilding={fetchAllListBuilding}
       />
     </Container>
   );
 };
 
-export default ListHouse;
+export default ListBuilding;

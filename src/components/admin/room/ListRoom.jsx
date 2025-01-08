@@ -20,7 +20,7 @@ import {
   FaMoneyBillWave,
   FaExpandArrowsAlt,
 } from "react-icons/fa";
-import DeleteRoom from "./DeleteRoom";
+import DeleteRoom from "../../owner/room/DeleteRoom";
 import "../../../styles/ListRoom.scss";
 const ListRoom = () => {
   const [rooms, setRooms] = useState([]);
@@ -59,7 +59,7 @@ const ListRoom = () => {
   }, []);
 
   const handleViewDetails = (roomId) => {
-    navigate(`/owner/room/${roomId}`);
+    navigate(`/admin/room/${roomId}`);
   };
 
   const handleDeleteRoom = (room) => {
@@ -110,7 +110,7 @@ const ListRoom = () => {
           <h1 className="page-title">Danh sách phòng</h1>
           <Button
             className="btn-add-room"
-            onClick={() => navigate("/owner/room/create")}
+            onClick={() => navigate("/admin/room/create")}
           >
             <FaPlus /> Thêm phòng mới
           </Button>
